@@ -5,15 +5,110 @@
 			Best Bunnies
 		</title>
 		<base target="_blank">
+		<!--
 		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
 		<script src="https://epicenterprograms.github.io/standards/behavior/presentation.js"></script>
 		<script src="https://epicenterprograms.github.io/standards/behavior/game.js"></script>
+		<script>
+			var G = Standards.game;
+			var P = Standards.presentation;
+			var S = Standards.general;
+		</script>
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/presentation.css">
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/game.css">
+		-->
+		<script src="file:///C:/Users/Robert/Documents/GitHub/standards/behavior/general.js"></script>
+		<script src="file:///C:/Users/Robert/Documents/GitHub/standards/behavior/presentation.js"></script>
+		<script src="file:///C:/Users/Robert/Documents/GitHub/standards/behavior/game.js"></script>
+		<script>
+			var G = Standards.game;
+			var P = Standards.presentation;
+			var S = Standards.general;
+			var screenScaling = [1, 1];
+
+			S.listen("fullscreen", "click", function () {
+				screenScaling = P.slides.toggleFullscreen();
+			});
+			document.addEventListener("fullscreenchange", function () {
+				if (document.fullscreenElement === null) {
+					G.updateScaling([Standards.presentation.slides.originalDimensions[0]/screen.width, Standards.presentation.slides.originalDimensions[1]/screen.height]);
+				} else {
+					G.updateScaling(screenScaling);
+				}
+			});
+			document.addEventListener("webkitfullscreenchange", function () {
+				if (document.webkitFullscreenElement === null) {
+					G.updateScaling([Standards.presentation.slides.originalDimensions[0]/screen.width, Standards.presentation.slides.originalDimensions[1]/screen.height]);
+				} else {
+					G.updateScaling(screenScaling);
+				}
+			});
+			document.addEventListener("mozfullscreenchange", function () {
+				if (document.mozFullScreenElement === null) {
+					G.updateScaling([Standards.presentation.slides.originalDimensions[0]/screen.width, Standards.presentation.slides.originalDimensions[1]/screen.height]);
+				} else {
+					G.updateScaling(screenScaling);
+				}
+			});
+			document.addEventListener("msfullscreenchange", function () {
+				if (document.msFullscreenElement === null) {
+					G.updateScaling([Standards.presentation.slides.originalDimensions[0]/screen.width, Standards.presentation.slides.originalDimensions[1]/screen.height]);
+				} else {
+					G.updateScaling(screenScaling);
+				}
+			});
+
+			S.onLoad(function () {
+				let slides = S.getClass("slides")[0];
+				G.setDisplayDimensions(Number(window.getComputedStyle(slides).width.slice(0,-2)), Number(window.getComputedStyle(slides).height.slice(0,-2)));
+				S.forEach(slides.children, function (slide, index) {
+					let previous = document.createElement("button");
+					let next = document.createElement("button");
+					let test = document.createElement("button");
+					previous.textContent = "Previous";
+					next.textContent = "Next";
+					test.textContent = "Test";
+					S.listen(previous, "click", function () {
+						P.slides.previous();
+					});
+					S.listen(next, "click", function () {
+						P.slides.next();
+					});
+					S.listen(test, "click", function () {
+						let face = G.Character.instances[0];
+						//////// bunny hop
+						face.setVelocity(100, 90);
+						face.setAcceleration(400, 270);
+						face.move(.5);
+						////////
+					});
+					slide.appendChild(document.createElement("br"));
+					slide.appendChild(previous);
+					slide.appendChild(next);
+					slide.appendChild(document.createElement("br"));
+					slide.appendChild(test);
+
+					if (index > 0) {
+						let character = new G.Character(["Basic bunny.svg", "sad-face", "angry-face", "alien-face", "robot-face"][index - 1]);
+						character.insertBodyInto(slide, function () {
+							character.goTo(G.displayWidth / 2, 50);
+						});
+					}
+				});
+			});
+		</script>
+		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/foundation.css">
+		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/presentation.css">
+		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/game.css">
 		<style>
 			body {
 				background: repeating-linear-gradient(gray, maroon 100vh, gray 200vh);
+			}
+			.slides {
+				width: 40rem;
+				height: 30rem;
+				background-color: lightblue;
 			}
 		</style>
 	</head>
@@ -26,8 +121,28 @@
 				This will be amazing.
 			</p>
 			<div class="instant slides">
-				<div></div>
+				<div>
+					Play
+				</div>
+				<div>
+					Scene 1
+				</div>
+				<div>
+					Scene 2
+				</div>
+				<div>
+					Scene 3
+				</div>
+				<div>
+					Scene 4
+				</div>
+				<div>
+					Scene 5
+				</div>
 			</div>
+			<button id="fullscreen">
+				Fullscreen
+			</button>
 		</main>
 	</body>
 </html>

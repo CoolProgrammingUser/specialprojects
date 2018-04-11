@@ -35,6 +35,7 @@ content
 		not lying
 
 functionality
+	speech bubbles
 	scene select
 	pausing
 	make a "boing" sound at every hop
