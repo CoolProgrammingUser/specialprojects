@@ -18,50 +18,46 @@
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/presentation.css">
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/game.css">
 		-->
+		<link rel="icon" href="Gray bunny.png">
 		<script src="file:///C:/Users/Robert/Documents/GitHub/standards/behavior/general.js"></script>
 		<script src="file:///C:/Users/Robert/Documents/GitHub/standards/behavior/presentation.js"></script>
 		<script src="file:///C:/Users/Robert/Documents/GitHub/standards/behavior/game.js"></script>
 		<script>
 			var G = Standards.game;
+			var A = Standards.game.animations;
 			var P = Standards.presentation;
 			var S = Standards.general;
-			var screenScaling = [1, 1];
-
+			/*  ////
 			S.listen("fullscreen", "click", function () {
-				screenScaling = P.slides.toggleFullscreen();
+				P.slides.toggleFullscreen();
 			});
-			document.addEventListener("fullscreenchange", function () {
-				if (document.fullscreenElement === null) {
-					G.updateScaling([Standards.presentation.slides.originalDimensions[0]/screen.width, Standards.presentation.slides.originalDimensions[1]/screen.height]);
-				} else {
-					G.updateScaling(screenScaling);
-				}
-			});
-			document.addEventListener("webkitfullscreenchange", function () {
-				if (document.webkitFullscreenElement === null) {
-					G.updateScaling([Standards.presentation.slides.originalDimensions[0]/screen.width, Standards.presentation.slides.originalDimensions[1]/screen.height]);
-				} else {
-					G.updateScaling(screenScaling);
-				}
-			});
-			document.addEventListener("mozfullscreenchange", function () {
-				if (document.mozFullScreenElement === null) {
-					G.updateScaling([Standards.presentation.slides.originalDimensions[0]/screen.width, Standards.presentation.slides.originalDimensions[1]/screen.height]);
-				} else {
-					G.updateScaling(screenScaling);
-				}
-			});
-			document.addEventListener("msfullscreenchange", function () {
-				if (document.msFullscreenElement === null) {
-					G.updateScaling([Standards.presentation.slides.originalDimensions[0]/screen.width, Standards.presentation.slides.originalDimensions[1]/screen.height]);
-				} else {
-					G.updateScaling(screenScaling);
-				}
-			});
+			*/
+
+			G.Character.prototype.hop = function (x, y) {
+				/**
+				makes a character hop
+				arguments:
+					x = optional; the x-coordinate to hop to
+					y = optional; the y-coordinate to hop to
+				*/
+				var character = this;
+				G.animations.add(0, function () {
+					let originalPosition = [character.position.x, character.position.y];
+					x = x === undefined ? originalPosition[0] : x;
+					y = y === undefined ? originalPosition[1] : y;
+					character.velocity.x = 2 * (x - originalPosition[0]);
+					character.velocity.y = -100 + 2 * (y - originalPosition[1]);
+					character.setAcceleration(400, 270);
+				});
+				G.animations.add(.5, character.moveOneFrame);
+				G.animations.add(0, function () {
+					character.goTo(x, y);
+				});
+			};
 
 			S.onLoad(function () {
 				let slides = S.getClass("slides")[0];
-				G.setDisplayDimensions(Number(window.getComputedStyle(slides).width.slice(0,-2)), Number(window.getComputedStyle(slides).height.slice(0,-2)));
+				G.container = slides;
 				S.forEach(slides.children, function (slide, index) {
 					let previous = document.createElement("button");
 					let next = document.createElement("button");
@@ -69,6 +65,7 @@
 					previous.textContent = "Previous";
 					next.textContent = "Next";
 					test.textContent = "Test";
+
 					S.listen(previous, "click", function () {
 						P.slides.previous();
 					});
@@ -76,25 +73,49 @@
 						P.slides.next();
 					});
 					S.listen(test, "click", function () {
-						let face = G.Character.instances[0];
-						//////// bunny hop
-						face.setVelocity(100, 90);
-						face.setAcceleration(400, 270);
-						face.move(.5);
-						////////
+						let gray = G.Character.instances[0];
+						let red = G.Character.instances[1];
+						gray.goTo(30, 74);
+						gray.hop();
+						A.wait(.25);
+						gray.hop(120, 25);
+						A.wait(.25);
+						red.speak("That's just plain crazy.");
+						gray.hop(70, 74);
+						A.wait(.25);
+						gray.hop(120, 85);
+						A.wait(.25);
+						gray.flip();
+						gray.hop(10, 10);
+						A.wait(.25);
+						gray.hop(10, 74);
+						gray.flip();
+						A.wait(.25);
+						gray.hop(30, 74);
+						gray.speak("Success!");
+						A.wait("finishedSpeaking");
+						A.run();
 					});
+					S.listen(slide, "click", function (event) {  //// helps me find coordinates for things I want to insert
+						let rect = this.getBoundingClientRect();
+						let pixels = G.lengthPixels;
+						console.log(((event.pageX - rect.left) / pixels).toFixed(2) + ", " + ((event.pageY - rect.top) / pixels - 20.91).toFixed(2));
+					});
+
 					slide.appendChild(document.createElement("br"));
 					slide.appendChild(previous);
 					slide.appendChild(next);
 					slide.appendChild(document.createElement("br"));
 					slide.appendChild(test);
-
-					if (index > 0) {
-						let character = new G.Character(["Basic bunny.svg", "sad-face", "angry-face", "alien-face", "robot-face"][index - 1]);
-						character.insertBodyInto(slide, function () {
-							character.goTo(G.displayWidth / 2, 50);
-						});
-					}
+					
+					let grayBunny = new G.Character("Gray bunny.png");
+					grayBunny.insertBodyInto(slide, function () {
+						this.goTo(30, 74);
+					});
+					let redRabbit = new G.Character("Red rabbit.png");
+					redRabbit.insertBodyInto(slide, function () {
+						this.goTo(50, 74);
+					});
 				});
 			});
 		</script>
@@ -102,13 +123,17 @@
 		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/presentation.css">
 		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/game.css">
 		<style>
+			/*
 			body {
 				background: repeating-linear-gradient(gray, maroon 100vh, gray 200vh);
 			}
+			*/
 			.slides {
 				width: 40rem;
 				height: 30rem;
 				background-color: lightblue;
+				background-image: url("background.svg");
+				background-size: cover;
 			}
 		</style>
 	</head>
@@ -140,7 +165,7 @@
 					Scene 5
 				</div>
 			</div>
-			<button id="fullscreen">
+			<button id="fullscreen" disabled>
 				Fullscreen
 			</button>
 		</main>
