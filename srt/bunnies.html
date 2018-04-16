@@ -27,74 +27,401 @@
 			var A = Standards.game.animations;
 			var P = Standards.presentation;
 			var S = Standards.general;
+			var mainCharacters = [];
+			var gray;
+			var red;
+			var tree;
+			var boingSound1 = new Audio("Boing.mp3");
+			var boingSound2 = new Audio("Boing.mp3");
+			var boingSound3 = new Audio("Boing.mp3");
+			var things = {};
+
 			/*  ////
 			S.listen("fullscreen", "click", function () {
 				P.slides.toggleFullscreen();
 			});
 			*/
 
-			G.Character.prototype.hop = function (x, y) {
+			G.Character.prototype.flip = function () {
+				this.body.classList.toggle("flipped");
+			};
+
+			G.Character.prototype.hop = function (x, y, returnFunction, boing) {
 				/**
 				makes a character hop
 				arguments:
 					x = optional; the x-coordinate to hop to
 					y = optional; the y-coordinate to hop to
+					returnFunction = optional; whether a function should be returned instead of being added to the queue
+						default: false
+					boing = optional; whether the "boing" sound should be played
+						default: true;
 				*/
 				var character = this;
-				G.animations.add(0, function () {
-					let originalPosition = [character.position.x, character.position.y];
-					x = x === undefined ? originalPosition[0] : x;
-					y = y === undefined ? originalPosition[1] : y;
-					character.velocity.x = 2 * (x - originalPosition[0]);
-					character.velocity.y = -100 + 2 * (y - originalPosition[1]);
-					character.setAcceleration(400, 270);
-				});
-				G.animations.add(.5, character.moveOneFrame);
-				G.animations.add(0, function () {
-					character.goTo(x, y);
-				});
+				var originalPosition;
+				boing = boing === undefined ? true : boing;
+				if (returnFunction) {
+					return function () {
+						originalPosition = [character.position.x, character.position.y];
+						x = x === undefined ? originalPosition[0] : x;
+						y = y === undefined ? originalPosition[1] : y;
+						character.velocity.x = 2 * (x - originalPosition[0]);
+						character.velocity.y = -100 + 2 * (y - originalPosition[1]);
+						character.setAcceleration(400, 270);
+						if (boing) {
+							if (boingSound1.duration > 0 && !boingSound1.paused) {
+								if (boingSound2.duration > 0 && !boingSound2.paused) {
+									boingSound3.play();
+								} else {
+									boingSound2.play();
+								}
+							} else {
+								boingSound1.play();
+							}
+						}
+					};
+				} else {
+					A.add(0, function () {
+						originalPosition = [character.position.x, character.position.y];
+						x = x === undefined ? originalPosition[0] : x;
+						y = y === undefined ? originalPosition[1] : y;
+						character.velocity.x = 2 * (x - originalPosition[0]);
+						character.velocity.y = -100 + 2 * (y - originalPosition[1]);
+						character.setAcceleration(400, 270);
+						if (boing) {
+							if (boingSound1.duration > 0 && !boingSound1.paused) {
+								if (boingSound2.duration > 0 && !boingSound2.paused) {
+									boingSound3.play();
+								} else {
+									boingSound2.play();
+								}
+							} else {
+								boingSound1.play();
+							}
+						}
+					});
+					A.add(.5, character.moveOneFrame);
+					A.add(0, function () {
+						character.goTo(x, y);
+					});
+				}
 			};
+
+			function setCharacters() {
+				let currentSlide = Number(S.getClass("slides")[0].getAttribute("data-current-slide"));
+				tree = mainCharacters[currentSlide][0];
+				red = mainCharacters[currentSlide][1];
+				gray = mainCharacters[currentSlide][2];
+			}
+
+			function stroll(repeat) {
+				repeat = repeat || 5;
+				if (repeat == 5) {
+					tree.goTo(200, 58, true);
+				}
+				S.forEach(repeat, function () {
+					A.add(0, function () {
+						if (repeat == 5) {
+							tree.setVelocity(50, 180);
+						}
+						red.setVelocity(50, 180);
+						red.setAcceleration(0, 0);
+						gray.hop(80, 74, true)();
+					});
+					A.add(.5, function () {
+						gray.moveOneFrame();
+						red.moveOneFrame();
+						if (repeat == 5) {
+							tree.moveOneFrame();
+						}
+					});
+					A.add(0, function () {
+						gray.setVelocity(50, 180);
+						gray.setAcceleration(0, 0);
+						red.hop(30, 74, true)();
+					});
+					A.add(.5, function () {
+						gray.moveOneFrame();
+						red.moveOneFrame();
+						if (repeat == 5) {
+							tree.moveOneFrame();
+						}
+					});
+					gray.goTo(55, 74, true);
+					red.goTo(30, 74, true);
+				});
+			}
+
+			function leave(repeat) {
+				repeat = repeat || 4;
+				S.forEach(repeat, function () {
+					A.add(0, function () {
+						gray.velocity.x = 60;
+						gray.velocity.y = -100;
+						gray.setAcceleration(400, 270);
+						red.velocity.x = 60;
+						red.velocity.y = -100;
+						red.setAcceleration(400, 270);
+						if (boingSound1.duration > 0 && !boingSound1.paused) {
+							if (boingSound2.duration > 0 && !boingSound2.paused) {
+								boingSound3.play();
+							} else {
+								boingSound2.play();
+							}
+						} else {
+							boingSound1.play();
+						}
+					});
+					A.add(.5, gray.moveOneFrame);
+					A.add(0, function () {
+						if (boingSound1.duration > 0 && !boingSound1.paused) {
+							if (boingSound2.duration > 0 && !boingSound2.paused) {
+								boingSound3.play();
+							} else {
+								boingSound2.play();
+							}
+						} else {
+							boingSound1.play();
+						}
+					});
+					A.add(.5, red.moveOneFrame);
+
+				});
+			}
+
+			window.addEventListener("playScene", function () {  // sets all of the actions of the animation
+				let currentSlide = Number(S.getClass("slides")[0].getAttribute("data-current-slide"));
+				let fs = "finishedSpeaking";
+				function goToNextScene() {
+					if (currentSlide < 5) {
+						A.add(0, function () {
+							P.slides.next();
+							setTimeout(function () {
+								window.dispatchEvent(new Event("playScene"));
+							}, G.refreshInterval);
+						});
+					}
+				}
+				setCharacters();
+				switch (currentSlide) {
+					case 0:
+						red.goTo(90, 65, true);
+						gray.goTo(63, 51, true);
+						A.add(0, function () {
+							red.body.classList.toggle("flipped");
+						});
+						red.speak("Are you happy that got first place yet again?");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Of course! For all the reading I do, I better get first place in speed reading.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("What are you going to do with your trophy over there?");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("I'm sure one of my friends will be willing to store it for me.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("Why don't YOU store it someplace?");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak('The real question is, "why would I want the responsibility of storing such a huge trophy?"');
+						A.wait(fs);
+						A.wait(.8);
+						gray.speak("One thing I'm wondering, though, is how you were even able to compete:");
+						A.wait(fs);
+						gray.speak("You're disqualified if it's your fourth year, and wasn't last year your fourth year?");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("Ummm... no.");
+						A.wait(fs);
+						red.speak("This is my fourth year.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Hmm... whatever.");
+						A.wait(fs);
+						A.wait(.8);
+						red.speak("But good job, anyway. How about a friendly high-five?");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Sure.");
+						A.wait(fs);
+						A.wait(.4);
+						A.add(0, function () {
+							red.body.classList.toggle("raise-left");
+							gray.body.classList.toggle("raise-right");
+						});
+						A.add(0, function () {
+							gray.setVelocity(150, 65);
+							gray.setAcceleration(400, 270);
+							red.hop(undefined, undefined, true)();
+						});
+						A.add(.5, function () {
+							red.moveOneFrame();
+							gray.moveOneFrame();
+						});
+						A.add(0, function () {
+							red.body.classList.toggle("raise-left");
+						});
+						A.add(.3, function () {
+							gray.moveOneFrame();
+						});
+						gray.goTo(118, 74, true);
+						A.add(0, function () {
+							gray.body.classList.toggle("raise-right");
+						});
+						gray.speak("Psych!");
+						A.wait(fs);
+						A.add(0, function () {
+							red.body.classList.toggle("flipped");
+						});
+						gray.hop(160, 74);
+						red.speak("Hey!");
+						A.wait(fs);
+						red.hop(118, 74);
+						red.hop(160, 74);
+						A.wait(.5);
+						goToNextScene();
+						break;
+					case 1:
+						red.goTo(G.displayWidth / 2 - 20, 74, true);
+						gray.goTo(G.displayWidth / 2 + 20, 74, true);
+						red.speak("Hold up!");
+						A.wait(fs);
+						A.wait(.4);
+						A.add(0, function () {
+							gray.body.classList.toggle("flipped");
+						});
+						gray.speak("What?");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("You can't just leave like that.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Sure I can.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("I think I'm going to start calling you Mean Rabbit.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Is that what you wanted to tell me?");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("Well, before you left me hanging on that high-five,");
+						A.wait(fs);
+						red.speak("I was going to ask you whether my book holder helped you; I know it helped me.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Oh yeah, that's right: you did give me a book holder.");
+						A.wait(fs);
+						gray.speak("I lost it.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("What! You lost it!? But it's so useful!");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("I'm sure I could find it if I looked hard enough, but I never used it.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("I'm extremely disappointed in you.");
+						A.wait(fs);
+						A.wait(1);
+						gray.speak("Well, if that's all, I'm going to go now.");
+						A.wait(fs);
+						A.add(0, function () {
+							gray.body.classList.toggle("flipped");
+						});
+						red.speak("Wait!");
+						A.wait(fs);
+						A.add(0, function () {
+							gray.body.classList.toggle("flipped");
+						});
+						gray.speak("What now?");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("I need a ride back home.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("*Sigh*");
+						A.wait(fs);
+						gray.speak("Okay. Just so long as you're okay with driving through a few neighborhoods first.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("Of course.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Alright then, let's go");
+						A.wait(fs);
+						A.add(0, function () {
+							gray.body.classList.toggle("flipped");
+						});
+						A.wait(.4);
+						leave();
+						goToNextScene();
+						break;
+					case 2:
+						//// gray.speak("This is scene #" + (currentSlide + 1) + ".");
+						//// goToNextScene();
+						break;
+					case 3:
+						gray.speak("This is scene #" + (currentSlide + 1) + ".");
+						A.wait(fs);
+						stroll();
+						goToNextScene();
+						break;
+					case 4:
+						gray.speak("This is scene #" + (currentSlide + 1) + ".");
+						A.wait(fs);
+						break;
+					default:
+						console.error("An attempt was made to play a non-existent animation.");
+						return;
+				}
+				A.run();
+			});
 
 			S.onLoad(function () {
 				let slides = S.getClass("slides")[0];
 				G.container = slides;
 				S.forEach(slides.children, function (slide, index) {
-					let previous = document.createElement("button");
-					let next = document.createElement("button");
-					let test = document.createElement("button");
-					previous.textContent = "Previous";
-					next.textContent = "Next";
-					test.textContent = "Test";
+					let play = document.createElement("button");
+					let buttonHolder = document.createElement("div");
+					let one = document.createElement("button");
+					let two = document.createElement("button");
+					let three = document.createElement("button");
+					let four = document.createElement("button");
+					let five = document.createElement("button");
+					play.className = "play-button";
+					buttonHolder.className = "button-holder";
+					play.textContent = "Play";
+					one.textContent = "Scene 1";
+					two.textContent = "Scene 2";
+					three.textContent = "Scene 3";
+					four.textContent = "Scene 4";
+					five.textContent = "Scene 5";
 
-					S.listen(previous, "click", function () {
-						P.slides.previous();
+					S.listen(one, "click", function () {
+						A.clear();
+						P.slides.goTo("", 1);
 					});
-					S.listen(next, "click", function () {
-						P.slides.next();
+					S.listen(two, "click", function () {
+						A.clear();
+						P.slides.goTo("", 2);
 					});
-					S.listen(test, "click", function () {
-						let gray = G.Character.instances[0];
-						let red = G.Character.instances[1];
-						gray.goTo(30, 74);
-						gray.hop();
-						A.wait(.25);
-						gray.hop(120, 25);
-						A.wait(.25);
-						red.speak("That's just plain crazy.");
-						gray.hop(70, 74);
-						A.wait(.25);
-						gray.hop(120, 85);
-						A.wait(.25);
-						gray.flip();
-						gray.hop(10, 10);
-						A.wait(.25);
-						gray.hop(10, 74);
-						gray.flip();
-						A.wait(.25);
-						gray.hop(30, 74);
-						gray.speak("Success!");
-						A.wait("finishedSpeaking");
-						A.run();
+					S.listen(three, "click", function () {
+						A.clear();
+						P.slides.goTo("", 3);
+					});
+					S.listen(four, "click", function () {
+						A.clear();
+						P.slides.goTo("", 4);
+					});
+					S.listen(five, "click", function () {
+						A.clear();
+						P.slides.goTo("", 5);
+					});
+					S.listen(play, "click", function () {
+						window.dispatchEvent(new Event("playScene"));
 					});
 					S.listen(slide, "click", function (event) {  //// helps me find coordinates for things I want to insert
 						let rect = this.getBoundingClientRect();
@@ -102,21 +429,42 @@
 						console.log(((event.pageX - rect.left) / pixels).toFixed(2) + ", " + ((event.pageY - rect.top) / pixels - 20.91).toFixed(2));
 					});
 
-					slide.appendChild(document.createElement("br"));
-					slide.appendChild(previous);
-					slide.appendChild(next);
-					slide.appendChild(document.createElement("br"));
-					slide.appendChild(test);
-					
-					let grayBunny = new G.Character("Gray bunny.png");
-					grayBunny.insertBodyInto(slide, function () {
-						this.goTo(30, 74);
+					[one, two, three, four, five, document.createElement("br"), play].forEach(function (button) {
+						buttonHolder.appendChild(button);
 					});
-					let redRabbit = new G.Character("Red rabbit.png");
-					redRabbit.insertBodyInto(slide, function () {
-						this.goTo(50, 74);
-					});
+					slide.appendChild(buttonHolder);
+
+					mainCharacters.push([]);
+					mainCharacters[index].push(new G.Character("Tree.svg", { classes: "tree" }));
+					mainCharacters[index].push(new G.Character("Red rabbit.png", { classes: "red-bunny" }));
+					mainCharacters[index].push(new G.Character("Gray bunny.png", { classes: "gray-bunny" }));
 				});
+
+				// inserts stuff into slide 1
+				things.ceremony = new G.Character("Awards ceremony.svg", { id: "ceremony" });
+				things.ceremony.insertBodyInto(slides.children[0], function () {
+					this.goTo(54, 67);
+				});
+				things.secondPlace = new G.Character("Basic bunny.svg");
+				things.secondPlace.insertBodyInto(slides.children[0], function () {
+					this.goTo(32, 61);
+					this.body.classList.toggle("flipped");
+				});
+				mainCharacters[0][1].insertBodyInto(slides.children[0], function () {
+					this.goTo(90, 65);
+				});
+				mainCharacters[0][2].insertBodyInto(slides.children[0], function () {
+					this.goTo(63, 51);
+				});
+				// inserts stuff into slide 2
+				mainCharacters[1][1].insertBodyInto(slides.children[1], function () {
+					this.goTo(G.displayWidth/2-20, 74);
+				});
+				mainCharacters[1][2].insertBodyInto(slides.children[1], function () {
+					this.goTo(G.displayWidth/2+20, 74);
+				});
+				// inserts stuff into slide 3
+				//// put the car here
 			});
 		</script>
 		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/foundation.css">
@@ -135,6 +483,37 @@
 				background-image: url("background.svg");
 				background-size: cover;
 			}
+			.button-holder {
+				position: absolute;
+				left: 0rem;
+				top: 83%;
+				width: 100%;
+			}
+			.button-holder button {
+				margin: .5rem 1rem;
+			}
+			.tree {
+				z-index: -1;
+				width: 10rem;
+			}
+			.red-bunny {
+				z-index: 1;
+			}
+			.gray-bunny {
+				z-index: 1;
+			}
+			.flipped {
+				transform: scale(-1, 1);
+			}
+			.raise-left {
+				transform: scale(-1, 1) rotate(-30deg);
+			}
+			.raise-right {
+				transform: scale(1, 1) rotate(-30deg);
+			}
+			#ceremony {
+				width: 30rem;
+			}
 		</style>
 	</head>
 	<body>
@@ -147,22 +526,19 @@
 			</p>
 			<div class="instant slides">
 				<div>
-					Play
+					Slide 1
 				</div>
 				<div>
-					Scene 1
+					Slide 2
 				</div>
 				<div>
-					Scene 2
+					Slide 3
 				</div>
 				<div>
-					Scene 3
+					Slide 4
 				</div>
 				<div>
-					Scene 4
-				</div>
-				<div>
-					Scene 5
+					Slide 5
 				</div>
 			</div>
 			<button id="fullscreen" disabled>

@@ -6,11 +6,17 @@ content
 	psychology projects
 	high fives
 	not knowing my grade
-	--------
 	reading
 	books stashed in other people's lockers
-	yearbook
-	Chairy Project blabbing
+
+	getting another award (for reading)
+	storing the trophy with someone else
+	being surprised that I could still compete
+	faking out high-five
+	saying could have done better if on same team
+	use (or lack of) an aid (book holder)
+	asking for a ride home
+	will go there after driving through a few neighborhoods
 	--------
 	"living" in her car
 	being scared of spiders and snakes
@@ -18,24 +24,50 @@ content
 	physical impairments
 	ticket (from police)
 	writing to the end of a page
+
+	needing to drive somewhere (previous)
+	start driving
+	hitting a bird
+	ask about strange things in the car
+	seeing a spider
+	crashing
+	*-->
+	police asking for license and registration
+	giving a ticket
+	requesting lengthening
+	giving reasons for lengthening
 	--------
 	my birthday
 		awesome T-shirt
 		rollercoasters
-	her birthday
 	candy cane gram
 	enourmous eyes
+
+	start walking home
+	encounter a giant snake
+	defeat it
+	"I know, I know, I'm awesome. Let's not make a big deal about it."
+	praise
+	giving candy cane
+	taking glasses off to see it better
+	gigantic eyes
+	start to leave
+	high-five
 	--------
 	honorable mentions
+		Chairy Project blabbing
+		yearbook
 		regular messages
 		encoded messages and snippets on papers
 		musical
 		seconds and elements
 		donating blood
 		not lying
+		her birthday
+
+	scrolling text
 
 functionality
-	speech bubbles
 	scene select
 	pausing
-	make a "boing" sound at every hop
+	CHANGE THE URLS!
