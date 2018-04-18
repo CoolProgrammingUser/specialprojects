@@ -9,28 +9,15 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="33"
-   height="50"
-   viewBox="0 0 33 50"
+   width="499"
+   height="225.76421"
+   viewBox="0 0 499 225.76421"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   sodipodi:docname="Short ticket.svg">
+   sodipodi:docname="Road.svg">
   <defs
-     id="defs2">
-    <pattern
-       inkscape:stockid="Wavy"
-       id="Wavy"
-       height="5.1805778"
-       width="30.066020"
-       patternUnits="userSpaceOnUse"
-       inkscape:collect="always">
-      <path
-         id="path2161"
-         d="M 7.597,0.061 C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 5.173,1.052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 C 18.820,4.931 23.804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z "
-         style="fill:black;stroke:none;" />
-    </pattern>
-  </defs>
+     id="defs2" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -38,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="-128.5"
-     inkscape:cy="-1.3836365"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="241.79574"
+     inkscape:cy="132.15494"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -61,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -69,22 +56,23 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-201,-362.70831)">
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect6327"
-       width="33"
-       height="50"
-       x="201"
-       y="362.70831"
-       ry="0" />
-    <rect
-       style="opacity:1;fill:url(#Wavy);fill-opacity:1.0;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect6327-8"
-       width="33"
-       height="28"
-       x="201"
-       y="362.70831"
-       ry="0" />
+     transform="translate(6.5161268e-7,-257.28046)">
+    <path
+       style="fill:#323232;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 0,482.70832 h 499 l -60.26924,-224.92786 -378.327548,-0.5 z"
+       id="path812"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#ffff00;stroke-width:8.01256847;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 243.24473,257.41481 239.7092,482.98188"
+       id="path814"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#ffff00;stroke-width:8.01256847;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 257.38687,257.41481 2.82843,225.56707"
+       id="path816"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
   </g>
 </svg>

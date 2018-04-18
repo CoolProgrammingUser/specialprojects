@@ -30,7 +30,7 @@
 			var mainCharacters = [];
 			var gray;
 			var red;
-			var tree;
+			var tree = new G.Character("Tree.svg", { classes: "tree" });
 			var boingSound1 = new Audio("Boing.mp3");
 			var boingSound2 = new Audio("Boing.mp3");
 			var boingSound3 = new Audio("Boing.mp3");
@@ -109,9 +109,8 @@
 
 			function setCharacters() {
 				let currentSlide = Number(S.getClass("slides")[0].getAttribute("data-current-slide"));
-				tree = mainCharacters[currentSlide][0];
-				red = mainCharacters[currentSlide][1];
-				gray = mainCharacters[currentSlide][2];
+				red = mainCharacters[currentSlide][0];
+				gray = mainCharacters[currentSlide][1];
 			}
 
 			function stroll(repeat) {
@@ -205,7 +204,7 @@
 				setCharacters();
 				switch (currentSlide) {
 					case 0:
-						/*
+						//*
 						red.goTo(90, 65, true);
 						gray.goTo(63, 51, true);
 						A.add(0, function () {
@@ -282,11 +281,11 @@
 						red.hop(118, 74);
 						red.hop(160, 74);
 						A.wait(.5);
-						*/
+						//*/
 						goToNextScene();
 						break;
 					case 1:
-						/*
+						//*
 						red.goTo(G.displayWidth / 2 - 20, 74, true);
 						gray.goTo(G.displayWidth / 2 + 20, 74, true);
 						red.speak("Hold up!");
@@ -328,7 +327,7 @@
 						A.wait(.4);
 						red.speak("I'm extremely disappointed in you.");
 						A.wait(fs);
-						A.wait(1);
+						A.wait(1.2);
 						gray.speak("Well, if that's all, I'm going to go now.");
 						A.wait(fs);
 						A.add(0, function () {
@@ -353,29 +352,146 @@
 						red.speak("Of course.");
 						A.wait(fs);
 						A.wait(.4);
-						gray.speak("Alright then, let's go");
+						gray.speak("Alright then, let's go.");
 						A.wait(fs);
 						A.add(0, function () {
 							gray.body.classList.toggle("flipped");
 						});
 						A.wait(.4);
 						leave();
-						*/
+						//*/
 						goToNextScene();
 						break;
 					case 2:
-						//// gray.speak("This is scene #" + (currentSlide + 1) + ".");
-						//// goToNextScene();
-						break;
-					case 3:
-						gray.speak("This is scene #" + (currentSlide + 1) + ".");
+						//*
+						red.goTo(G.displayWidth / 2 - 9, 69);
+						gray.goTo(G.displayWidth / 2 + 8, 69);
+						things.car.goTo(G.displayWidth / 2, 70);
+						things.lookingBackCar.goTo(G.displayWidth / 2, 70);
+						things.doomedTree.goTo(-10, 120);
+						red.speak("You aren't a reckless driver, are you?");
 						A.wait(fs);
-						stroll();
+						A.wait(.4);
+						gray.speak("Of course not! I never even speed.");
+						A.wait(fs);
+						gray.speak("... unless I'm late getting somewhere.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("Hmmm, I see.");
+						A.wait(fs);
+						A.wait(.8);
+						things.car.hop(undefined, undefined, false, false);
+						A.wait(.4);
+						red.speak("What was that?!");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Just a bird; don't worry about it.");
+						A.wait(fs);
+						A.wait(.8);
+						red.speak("!!!!!!!!");
+						A.wait(fs);
+						A.wait(1.2);
+						red.speak("I can't watch this.");
+						A.wait(fs);
+						A.wait(.4);
+						A.add(0, function () {
+							things.lookingBackCar.body.style.display = "block";
+							things.car.body.style.display = "none";
+						});
+						A.wait(.4);
+						red.speak("Maybe I can keep myself held together by seeing what's back here.");
+						A.wait(fs);
+						A.wait(1.2);
+						red.speak("Why are there dishes back here?");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Oh, didn't you know? I live in my car.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("If it weren't for the full wardrobe I see, I might not have believed you.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("Are you too good for a box?");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Hey, I'm not homeless: I'm just between homes right now.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("If you say so.");
+						A.wait(fs);
+						A.wait(1.2);
+						red.speak("... There's something else back here, too...");
+						A.wait(fs);
+						A.wait(1.2);
+						red.speak("I think it's a spider.");
+						A.wait(fs);
+						gray.speak("A SPIDER?!");
+						A.wait(fs);
+						gray.speak("AAAAHHHH!!!!");
+						// car starts swerving
+						A.add(0, function () {
+							things.lookingBackCar.setVelocity(80, 0);
+						});
+						A.add(.25, function () {
+							things.lookingBackCar.moveOneFrame();
+						});
+						A.add(0, function () {
+							things.lookingBackCar.setVelocity(80, 180);
+						});
+						A.add(.25, function () {
+							things.lookingBackCar.moveOneFrame();
+						});
+						A.add(0, function () {
+							things.car.body.style.display = "block";
+							things.lookingBackCar.body.style.display = "none";
+						});
+						A.add(0, function () {
+							things.car.setVelocity(80, 180);
+							things.car.setAcceleration(0, 0);
+						});
+						A.add(.25, function () {
+							things.car.moveOneFrame();
+						});
+						A.add(0, function () {
+							things.car.setVelocity(80, 0);
+						});
+						A.add(.25, function () {
+							things.car.moveOneFrame();
+						});
+						red.speak("AAAAHHHH!!!!");
+						A.add(.25, function () {
+							things.car.moveOneFrame();
+						});
+						A.add(0, function () {
+							things.car.setVelocity(80, 180);
+						});
+						A.add(.5, function () {
+							things.car.moveOneFrame();
+						});
+						A.add(0, function () {
+							things.car.setVelocity(80, 0);
+						});
+						A.add(.5, function () {
+							things.car.moveOneFrame();
+						});
+						A.add(0, function () {
+							things.car.setVelocity(80, 180);
+						});
+						A.add(.9, function () {
+							things.car.moveOneFrame();
+							things.doomedTree.moveOneFrame();
+						});
+						gray.goTo(10, 55, true);
+						gray.speak("*CRASH!*");
+						A.wait(fs);
+						A.wait(1.2);
+						//*/
 						goToNextScene();
 						break;
+					case 3:
+						//// goToNextScene();
+						break;
 					case 4:
-						gray.speak("This is scene #" + (currentSlide + 1) + ".");
-						A.wait(fs);
 						break;
 					default:
 						console.error("An attempt was made to play a non-existent animation.");
@@ -439,12 +555,14 @@
 					slide.appendChild(buttonHolder);
 
 					mainCharacters.push([]);
-					mainCharacters[index].push(new G.Character("Tree.svg", { classes: "tree" }));
 					mainCharacters[index].push(new G.Character("Red rabbit.png", { classes: "red-bunny" }));
 					mainCharacters[index].push(new G.Character("Gray bunny.png", { classes: "gray-bunny" }));
 				});
 
-				// inserts stuff into slide 1
+
+				// inserts stuff into the slides
+
+				// slide 1
 				things.ceremony = new G.Character("Awards ceremony.svg", { id: "ceremony" });
 				things.ceremony.insertBodyInto(slides.children[0], function () {
 					this.goTo(54, 67);
@@ -454,21 +572,47 @@
 					this.goTo(32, 61);
 					this.body.classList.toggle("flipped");
 				});
-				mainCharacters[0][1].insertBodyInto(slides.children[0], function () {
+				mainCharacters[0][0].insertBodyInto(slides.children[0], function () {
 					this.goTo(90, 65);
 				});
-				mainCharacters[0][2].insertBodyInto(slides.children[0], function () {
+				mainCharacters[0][1].insertBodyInto(slides.children[0], function () {
 					this.goTo(63, 51);
 				});
-				// inserts stuff into slide 2
-				mainCharacters[1][1].insertBodyInto(slides.children[1], function () {
+				// slide 2
+				mainCharacters[1][0].insertBodyInto(slides.children[1], function () {
 					this.goTo(G.displayWidth/2-20, 74);
 				});
-				mainCharacters[1][2].insertBodyInto(slides.children[1], function () {
+				mainCharacters[1][1].insertBodyInto(slides.children[1], function () {
 					this.goTo(G.displayWidth/2+20, 74);
 				});
-				// inserts stuff into slide 3
-				//// put the car here
+				// slide 3
+				let road = document.createElement("img");
+				road.src = "Road.svg";
+				road.id = "road";
+				slides.children[2].appendChild(road);
+				mainCharacters[2][0].insertBodyInto(slides.children[1], function () {
+					this.body.style.display = "none";
+					this.goTo(G.displayWidth / 2 - 9, 69);
+				});
+				mainCharacters[2][1].insertBodyInto(slides.children[1], function () {
+					this.body.style.display = "none";
+					this.goTo(G.displayWidth / 2 + 8, 69);
+				});
+				things.car = new G.Character("Car.svg", { classes: "car" });
+				things.car.insertBodyInto(slides.children[2], function () {
+					this.goTo(G.displayWidth / 2, 70);
+				});
+				things.lookingBackCar = new G.Character("Car looking back.svg", { classes: "car" });
+				things.lookingBackCar.insertBodyInto(slides.children[2], function () {
+					this.body.style.display = "none";
+					this.goTo(G.displayWidth / 2, 70);
+				});
+				things.doomedTree = new G.Character("Tree.svg", { classes: "tree" });
+				things.doomedTree.insertBodyInto(slides.children[2], function () {
+					this.goTo(-10, 120);
+					this.body.style.zIndex = "2";
+					this.setVelocity(60, 67.5);
+				});
 			});
 		</script>
 		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/foundation.css">
@@ -515,8 +659,18 @@
 			.raise-right {
 				transform: scale(1, 1) rotate(-30deg);
 			}
+			.car {
+				width: 30%;
+			}
 			#ceremony {
 				width: 30rem;
+			}
+			#road {
+				position: absolute;
+				top: 76.5%;
+				left: 0%;
+				z-index: -1;
+				width: 150%;
 			}
 		</style>
 	</head>
