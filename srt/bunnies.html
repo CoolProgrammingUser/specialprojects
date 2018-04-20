@@ -5,23 +5,15 @@
 			Best Bunnies
 		</title>
 		<base target="_blank">
-		<!--
+		<link rel="icon" href="Gray bunny.png">
 		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
 		<script src="https://epicenterprograms.github.io/standards/behavior/presentation.js"></script>
 		<script src="https://epicenterprograms.github.io/standards/behavior/game.js"></script>
-		<script>
-			var G = Standards.game;
-			var P = Standards.presentation;
-			var S = Standards.general;
-		</script>
-		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
-		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/presentation.css">
-		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/game.css">
-		-->
-		<link rel="icon" href="Gray bunny.png">
+		<!--
 		<script src="file:///C:/Users/Robert/Documents/GitHub/standards/behavior/general.js"></script>
 		<script src="file:///C:/Users/Robert/Documents/GitHub/standards/behavior/presentation.js"></script>
 		<script src="file:///C:/Users/Robert/Documents/GitHub/standards/behavior/game.js"></script>
+		-->
 		<script>
 			var G = Standards.game;
 			var A = Standards.game.animations;
@@ -30,7 +22,7 @@
 			var mainCharacters = [];
 			var gray;
 			var red;
-			var tree = new G.Character("Tree.svg", { classes: "tree" });
+			var tree;
 			var boingSound1 = new Audio("Boing.mp3");
 			var boingSound2 = new Audio("Boing.mp3");
 			var boingSound3 = new Audio("Boing.mp3");
@@ -122,6 +114,7 @@
 					A.add(0, function () {
 						if (repeat == 5) {
 							tree.setVelocity(50, 180);
+							things.snake.setVelocity(50, 180);
 						}
 						red.setVelocity(50, 180);
 						red.setAcceleration(0, 0);
@@ -132,6 +125,7 @@
 						red.moveOneFrame();
 						if (repeat == 5) {
 							tree.moveOneFrame();
+							things.snake.moveOneFrame();
 						}
 					});
 					A.add(0, function () {
@@ -144,6 +138,7 @@
 						red.moveOneFrame();
 						if (repeat == 5) {
 							tree.moveOneFrame();
+							things.snake.moveOneFrame();
 						}
 					});
 					gray.goTo(55, 74, true);
@@ -151,40 +146,47 @@
 				});
 			}
 
-			function leave(repeat) {
+			function leave(repeat, certainRabbit) {
 				repeat = repeat || 4;
 				S.forEach(repeat, function () {
-					A.add(0, function () {
-						gray.velocity.x = 60;
-						gray.velocity.y = -100;
-						gray.setAcceleration(400, 270);
-						red.velocity.x = 60;
-						red.velocity.y = -100;
-						red.setAcceleration(400, 270);
-						if (boingSound1.duration > 0 && !boingSound1.paused) {
-							if (boingSound2.duration > 0 && !boingSound2.paused) {
-								boingSound3.play();
+					if (!certainRabbit || certainRabbit == "gray") {
+						A.add(0, function () {
+							gray.velocity.x = 60;
+							gray.velocity.y = -100;
+							gray.setAcceleration(400, 270);
+							if (boingSound1.duration > 0 && !boingSound1.paused) {
+								if (boingSound2.duration > 0 && !boingSound2.paused) {
+									boingSound3.play();
+								} else {
+									boingSound2.play();
+								}
 							} else {
-								boingSound2.play();
+								boingSound1.play();
 							}
-						} else {
-							boingSound1.play();
-						}
-					});
-					A.add(.5, gray.moveOneFrame);
-					A.add(0, function () {
-						if (boingSound1.duration > 0 && !boingSound1.paused) {
-							if (boingSound2.duration > 0 && !boingSound2.paused) {
-								boingSound3.play();
+						});
+						A.add(.5, gray.moveOneFrame);
+					} else {
+						A.wait(.1);
+					}
+					if (!certainRabbit || certainRabbit == "red") {
+						A.add(0, function () {
+							red.velocity.x = 60;
+							red.velocity.y = -100;
+							red.setAcceleration(400, 270);
+							if (boingSound1.duration > 0 && !boingSound1.paused) {
+								if (boingSound2.duration > 0 && !boingSound2.paused) {
+									boingSound3.play();
+								} else {
+									boingSound2.play();
+								}
 							} else {
-								boingSound2.play();
+								boingSound1.play();
 							}
-						} else {
-							boingSound1.play();
-						}
-					});
-					A.add(.5, red.moveOneFrame);
-
+						});
+						A.add(.5, red.moveOneFrame);
+					} else {
+						A.wait(.1);
+					}
 				});
 			}
 
@@ -204,7 +206,6 @@
 				setCharacters();
 				switch (currentSlide) {
 					case 0:
-						//*
 						red.goTo(90, 65, true);
 						gray.goTo(63, 51, true);
 						A.add(0, function () {
@@ -281,11 +282,9 @@
 						red.hop(118, 74);
 						red.hop(160, 74);
 						A.wait(.5);
-						//*/
 						goToNextScene();
 						break;
 					case 1:
-						//*
 						red.goTo(G.displayWidth / 2 - 20, 74, true);
 						gray.goTo(G.displayWidth / 2 + 20, 74, true);
 						red.speak("Hold up!");
@@ -359,11 +358,9 @@
 						});
 						A.wait(.4);
 						leave();
-						//*/
 						goToNextScene();
 						break;
 					case 2:
-						//*
 						red.goTo(G.displayWidth / 2 - 9, 69);
 						gray.goTo(G.displayWidth / 2 + 8, 69);
 						things.car.goTo(G.displayWidth / 2, 70);
@@ -485,13 +482,310 @@
 						gray.speak("*CRASH!*");
 						A.wait(fs);
 						A.wait(1.2);
-						//*/
 						goToNextScene();
 						break;
 					case 3:
-						//// goToNextScene();
+						gray.goTo(55, 74);
+						red.goTo(30, 74);
+						things.cop.goTo(85, 76);
+						things.shortTicket.goTo(78, 76);
+						things.longTicket.goTo(78, 76);
+						A.wait(.4);
+						things.cop.speak("And what did you say the cause of the accident was?");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("... A spider.");
+						A.wait(fs);
+						A.wait(.4);
+						things.cop.speak("A spider. I see.");
+						A.wait(fs);
+						things.cop.speak("Well, your information seems to be in order...");
+						A.wait(fs);
+						things.cop.speak("however, this is obviously a display of irresponsible driving: I'll have to give you a ticket.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("I understand.");
+						A.wait(fs);
+						A.wait(.4);
+						A.add(0, function () {
+							things.shortTicket.body.style.display = "block";
+						});
+						things.cop.speak("Here you are.");
+						A.wait(fs);
+						A.wait(2);
+						things.cop.speak("Well?");
+						A.wait(fs);
+						things.cop.speak("Are you going to take it?");
+						A.wait(fs);
+						A.wait(.8);
+						gray.speak("Ummm...");
+						A.wait(fs);
+						gray.speak("Do you think you could write anything else to fill up the rest of the ticket?");
+						A.wait(fs);
+						A.wait(.8);
+						things.cop.speak("What?");
+						A.wait(.2);
+						red.speak("What are you doing?");
+						A.wait(fs);
+						A.wait(fs);
+						gray.speak("It's just that I'd prefer to have a ticket that didn't leave any space at the bottom.");
+						A.wait(fs);
+						gray.speak("You can make some stuff up if you'd like.");
+						A.wait(fs);
+						A.wait(.8);
+						things.cop.speak("Ummm...");
+						A.wait(fs);
+						things.cop.speak("You aren't satisfied with the charges against you?");
+						A.wait(fs);
+						red.speak("Just take it, and let's go.");
+						A.wait(fs);
+						gray.speak("I know: you think making stuff up would be unethical.");
+						A.wait(fs);
+						gray.speak("That's okay: I can give you some real reasons to lengthen the ticket.");
+						A.wait(fs);
+						gray.speak("Did you know that, without my glasses, I'm legally blind?");
+						A.wait(fs);
+						gray.speak("I was told that I looked better without my glasses, so I'm not wearing them.");
+						A.wait(fs);
+						gray.speak("Also, I've had carpal tunnel surgery on both of my hands.");
+						A.wait(fs);
+						gray.speak("These hands aren't meant for holding a steering wheel.");
+						A.wait(fs);
+						gray.speak("That's not even to mention all of my psychological disorders.");
+						A.wait(fs);
+						gray.speak("I shouldn't be on the streets.");
+						A.wait(fs);
+						A.wait(.8);
+						things.cop.speak("Well... Let's see...");
+						A.wait(fs);
+						A.wait(.4);
+						A.add(0, function () {
+							things.longTicket.body.style.display = "block";
+							things.shortTicket.body.style.display = "none";
+						});
+						A.wait(.4);
+						things.cop.speak("I think that ought to cover you.");
+						A.wait(fs);
+						A.wait(.4);
+						things.longTicket.goTo(60, 78, true);
+						A.wait(.4);
+						gray.speak("Thank you.");
+						A.wait(fs);
+						A.wait(.4);
+						things.cop.speak("Have a good day.");
+						A.wait(fs);
+						A.wait(.5);
+						things.cop.hop(10, 76);
+						A.wait(.1);
+						things.cop.hop(-30, 76);
+						A.wait(1.6);
+						red.speak("ARE YOU INSANE?!");
+						A.wait(fs);
+						A.wait(.4);
+						A.add(0, function () {
+							things.longTicket.body.style.display = "none";
+							gray.body.classList.toggle("flipped");
+						});
+						gray.speak("Let's not turn against each other now. It's time for us to go.");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("It was time for us to go before you had the police officer lengthen your ticket!");
+						A.wait(fs);
+						A.wait(.4);
+						A.add(0, function () {
+							gray.body.classList.toggle("flipped");
+						});
+						gray.speak("You say your house is this way?");
+						A.wait(fs);
+						gray.speak("Come on.");
+						A.wait(fs);
+						leave(3, "gray");
+						red.speak("*Huff*");
+						A.wait(fs);
+						A.wait(.4);
+						leave(4, "red");
+						goToNextScene();
 						break;
 					case 4:
+						tree.goTo(200, 58);
+						red.goTo(30, 74);
+						gray.goTo(55, 74);
+						things.snake.goTo(350, 65);
+						things.snake.setAcceleration(0, 0);
+						things.snake.body.style.webkitTransform = "scale(1, 1)";
+						things.snake.body.style.transform = "scale(1, 1)";
+						things.hissingSnake.goTo(95, 65);
+						stroll();
+						gray.speak("AHHHH!!!!");
+						A.wait(.2);
+						A.add(0, function () {  // makes the snake hiss
+							things.hissingSnake.body.style.display = "block";
+							things.snake.body.style.display = "none";
+						});
+						A.wait(.2);
+						A.add(0, function () {  // makes the snake stop hissing
+							things.snake.body.style.display = "block";
+							things.hissingSnake.body.style.display = "none";
+						});
+						A.wait(fs);
+						gray.speak("A SNAKE!");
+						A.wait(.2);
+						A.add(0, function () {
+							things.hissingSnake.body.style.display = "block";
+							things.snake.body.style.display = "none";
+						});
+						A.wait(.2);
+						A.add(0, function () {
+							things.snake.body.style.display = "block";
+							things.hissingSnake.body.style.display = "none";
+						});
+						A.wait(fs);
+						gray.hop(10, 74);
+						A.add(0, function () {
+							gray.setAcceleration(0, 0);
+						});
+						G.forEach(8, function () {
+							A.add(0, function () {
+								gray.setVelocity(50, 0);
+							});
+							gray.move(.01, false);
+							A.add(0, function () {
+								gray.setVelocity(50, 180);
+							});
+							gray.move(.01, false);
+						});
+						gray.speak("SAVE ME!");
+						G.forEach(12, function () {
+							A.add(0, function () {
+								gray.setVelocity(50, 0);
+							});
+							gray.move(.01, false);
+							A.add(0, function () {
+								gray.setVelocity(50, 180);
+							});
+							gray.move(.01, false);
+						});
+						A.wait(fs);
+						A.wait(.3);
+						A.add(0, function () {
+							things.hissingSnake.body.style.display = "block";
+							things.snake.body.style.display = "none";
+						});
+						A.wait(.2);
+						A.add(0, function () {
+							things.snake.body.style.display = "block";
+							things.hissingSnake.body.style.display = "none";
+						});
+						A.wait(.3);
+						red.speak("Never fear!");
+						A.wait(.3);
+						A.add(0, function () {
+							things.hissingSnake.body.style.display = "block";
+							things.snake.body.style.display = "none";
+						});
+						A.wait(.2);
+						A.add(0, function () {
+							things.snake.body.style.display = "block";
+							things.hissingSnake.body.style.display = "none";
+						});
+						A.wait(fs);
+						A.wait(.4);
+						red.hop(86, 56);
+						A.add(0, function () {
+							let height = things.snake.height;
+							things.snake.body.style.webkitTransform = "scale(1, .5)";
+							things.snake.body.style.transform = "scale(1, .5)";
+							things.snake.position.y += height / 4 - 2;
+						});
+						red.hop(74, 74, false, false);
+						A.wait(.1);
+						A.add(0, function () {
+							red.body.classList.toggle("raise-right");
+							things.snake.setVelocity(300, 135);
+							things.snake.setAcceleration(400, 270);
+						});
+						things.snake.move(.8, false);
+						A.add(0, function () {
+							red.body.classList.toggle("raise-right");
+						});
+						A.wait(.4);
+						red.speak("Piece of cake.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.hop(40, 74);
+						gray.speak("My hero!");
+						A.wait(fs);
+						A.add(0, function () {
+							red.body.classList.toggle("flipped");
+						});
+						A.wait(.4);
+						red.speak("I know, I know, I'm awesome. Let's not make a big deal about it.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("How can I ever repay you?");
+						A.wait(fs);
+						A.add(0, function () {
+							things.candyCane.goTo(68, 97);  ////
+							things.candyCane.body.style.display = "block";
+						});
+						A.wait(.4);
+						red.speak("You can take this: it's been sticking to my fur, and I don't want it anymore.");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Um, sure.");
+						A.wait(fs);
+						A.add(0, function () {
+							things.candyCane.goTo(45, 97);
+						});
+						A.wait(.4);
+						gray.speak("But isn't there anything else?");
+						A.wait(fs);
+						A.add(0, function () {
+							things.candyCane.body.style.display = "none";
+						});
+						A.wait(1.2);
+						gray.speak("I know! How about making up for that high-five I cheated you out of?");
+						A.wait(fs);
+						A.wait(.4);
+						red.speak("You aren't toying with me, are you?");
+						A.wait(fs);
+						A.wait(.4);
+						gray.speak("Of course not!");
+						A.wait(fs);
+						gray.speak("Ready?");
+						A.wait(fs);
+						A.wait(.4);
+						A.add(0, function () {
+							gray.body.classList.toggle("raise-right");
+							red.body.classList.toggle("raise-left");
+							gray.setVelocity(100, 60);
+							red.setVelocity(96, 123);
+							gray.setAcceleration(0, 0);
+							red.setAcceleration(0, 0);
+						});
+						A.add(.2, function () {
+							gray.moveOneFrame();
+							red.moveOneFrame();
+						});
+						A.wait(1);
+						goToNextScene();
+						break;
+					case 5:
+						gray.goTo(50.5, 55.8);
+						red.goTo(63, 57.1);
+						things.scrollingText.setVelocity(4, 90);
+						things.darkener.style.display = "inline-block";
+						A.add(0, function () {
+							things.darkener.style.opacity = ".5";
+						});
+						things.scrollingText.move(95, this.moveOneFrame, false);
+						A.add(0, function () {
+							things.darkener.style.opacity = "0";
+						});
+						A.wait(1.5);
+						A.add(0, function () {
+							things.darkener.style.display = "none"
+						});
 						break;
 					default:
 						console.error("An attempt was made to play a non-existent animation.");
@@ -511,6 +805,7 @@
 					let three = document.createElement("button");
 					let four = document.createElement("button");
 					let five = document.createElement("button");
+					let six = document.createElement("button");
 					play.className = "play-button";
 					buttonHolder.className = "button-holder";
 					play.textContent = "Play";
@@ -519,6 +814,7 @@
 					three.textContent = "Scene 3";
 					four.textContent = "Scene 4";
 					five.textContent = "Scene 5";
+					six.textContent = "Scene 6";
 
 					S.listen(one, "click", function () {
 						A.clear();
@@ -540,16 +836,22 @@
 						A.clear();
 						P.slides.goTo("", 5);
 					});
+					S.listen(six, "click", function () {
+						A.clear();
+						P.slides.goTo("", 6);
+					});
 					S.listen(play, "click", function () {
 						window.dispatchEvent(new Event("playScene"));
 					});
+					/*  ////
 					S.listen(slide, "click", function (event) {  //// helps me find coordinates for things I want to insert
 						let rect = this.getBoundingClientRect();
 						let pixels = G.lengthPixels;
 						console.log(((event.pageX - rect.left) / pixels).toFixed(2) + ", " + ((event.pageY - rect.top) / pixels - 20.91).toFixed(2));
 					});
+					*/
 
-					[one, two, three, four, five, document.createElement("br"), play].forEach(function (button) {
+					[one, two, three, four, five, six, document.createElement("br"), play].forEach(function (button) {
 						buttonHolder.appendChild(button);
 					});
 					slide.appendChild(buttonHolder);
@@ -580,21 +882,21 @@
 				});
 				// slide 2
 				mainCharacters[1][0].insertBodyInto(slides.children[1], function () {
-					this.goTo(G.displayWidth/2-20, 74);
+					this.goTo(G.displayWidth / 2 - 20, 74);
 				});
 				mainCharacters[1][1].insertBodyInto(slides.children[1], function () {
-					this.goTo(G.displayWidth/2+20, 74);
+					this.goTo(G.displayWidth / 2 + 20, 74);
 				});
 				// slide 3
 				let road = document.createElement("img");
 				road.src = "Road.svg";
 				road.id = "road";
 				slides.children[2].appendChild(road);
-				mainCharacters[2][0].insertBodyInto(slides.children[1], function () {
+				mainCharacters[2][0].insertBodyInto(slides.children[2], function () {
 					this.body.style.display = "none";
 					this.goTo(G.displayWidth / 2 - 9, 69);
 				});
-				mainCharacters[2][1].insertBodyInto(slides.children[1], function () {
+				mainCharacters[2][1].insertBodyInto(slides.children[2], function () {
 					this.body.style.display = "none";
 					this.goTo(G.displayWidth / 2 + 8, 69);
 				});
@@ -613,11 +915,83 @@
 					this.body.style.zIndex = "2";
 					this.setVelocity(60, 67.5);
 				});
+				// slide 4
+				mainCharacters[3][0].insertBodyInto(slides.children[3], function () {
+					this.goTo(30, 74);
+				});
+				mainCharacters[3][1].insertBodyInto(slides.children[3], function () {
+					this.goTo(55, 74);
+				});
+				things.cop = new G.Character("Sherif.svg");
+				things.cop.insertBodyInto(slides.children[3], function () {
+					this.goTo(85, 76);
+					this.body.classList.toggle("flipped");
+				});
+				things.shortTicket = new G.Character("Short ticket.svg", { classes: "ticket" });
+				things.shortTicket.insertBodyInto(slides.children[3], function () {
+					this.body.style.display = "none";
+					this.goTo(78, 76);
+				});
+				things.longTicket = new G.Character("Long ticket.svg", { classes: "ticket" });
+				things.longTicket.insertBodyInto(slides.children[3], function () {
+					this.body.style.display = "none";
+					this.goTo(78, 76);
+				});
+				// slide 5
+				tree = new G.Character("Tree.svg", { classes: "tree" });
+				tree.insertBodyInto(slides.children[4], function () {
+					this.goTo(200, 58);
+				});
+				mainCharacters[4][0].insertBodyInto(slides.children[4], function () {
+					this.goTo(30, 74);
+				});
+				mainCharacters[4][1].insertBodyInto(slides.children[4], function () {
+					this.goTo(55, 74);
+				});
+				things.snake = new G.Character("Snake.svg", { classes: "snake" });
+				things.snake.insertBodyInto(slides.children[4], function () {
+					this.goTo(350, 65);
+				});
+				things.hissingSnake = new G.Character("Hissing snake.svg", { classes: "snake" });
+				things.hissingSnake.insertBodyInto(slides.children[4], function () {
+					this.body.style.display = "none";
+					this.goTo(95, 65);
+				});
+				things.candyCane = new G.Character("Candy cane.svg");
+				things.candyCane.insertBodyInto(slides.children[4], function () {
+					this.body.style.display = "none";
+					this.body.style.zIndex = "2";
+					this.width = 2;
+					this.goTo(68, 97);
+				});
+				// slide 6
+				mainCharacters[5][0].insertBodyInto(slides.children[5], function () {
+					this.goTo(63, 57.1);
+					this.body.classList.toggle("raise-left");
+				});
+				mainCharacters[5][1].insertBodyInto(slides.children[5], function () {
+					this.goTo(50.5, 55.8);
+					this.body.classList.toggle("flipped");
+					this.body.classList.toggle("raise-right");
+				});
+				things.darkener = document.createElement("div");
+				things.darkener.id = "sceneDarkener";
+				slides.children[5].appendChild(things.darkener);
+				things.scrollingText = new G.Character(document.createElement("div"), { id: "scrollingText" });
+				things.scrollingText.body.textContent = "To the person who provides me with such excellent animation material: Getting to know you was one of the best times of my life, and you've left me with unforgettable memories. Hopefully, this will contribute to returning the favor. No matter what happens, I want you to know that I'll always have a special place in my heart just for you. You're an amazing human being (or Oryctolagus cuniculus), and it has been my pleasure revisiting that in order to make this for you.\r\n\r\nYOU ROCK!";
+				things.scrollingText.insertBodyInto(slides.children[5], function () {
+					this.goTo(G.displayWidth / 2, 100 + this.height / 2);
+				});
 			});
 		</script>
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/presentation.css">
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/game.css">
+		<!--
 		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/foundation.css">
 		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/presentation.css">
 		<link rel="stylesheet" href="file:///C:/Users/Robert/Documents/GitHub/standards/formatting/game.css">
+		-->
 		<style>
 			/*
 			body {
@@ -654,12 +1028,19 @@
 				transform: scale(-1, 1);
 			}
 			.raise-left {
-				transform: scale(-1, 1) rotate(-30deg);
+				transform: scale(-1, 1) rotate(-60deg);
 			}
 			.raise-right {
-				transform: scale(1, 1) rotate(-30deg);
+				transform: scale(1, 1) rotate(-60deg);
 			}
 			.car {
+				width: 30%;
+			}
+			.ticket {
+				z-index: 2;
+				width: 2%;
+			}
+			.snake {
 				width: 30%;
 			}
 			#ceremony {
@@ -672,6 +1053,26 @@
 				z-index: -1;
 				width: 150%;
 			}
+			#sceneDarkener {
+				display: none;
+				position: absolute;
+				left: 0%;
+				top: 0%;
+				z-index: 2;
+				width: 100%;
+				height: 100%;
+				background-color: black;
+				opacity: 0;
+				transition: opacity 1.5s;
+			}
+			#scrollingText {
+				z-index: 3;
+				width: 100%;
+				padding: 1em;
+				color: white;
+				font-size: 3rem;
+				white-space: pre-line;
+			}
 		</style>
 	</head>
 	<body>
@@ -680,24 +1081,15 @@
 		</h1>
 		<main>
 			<p>
-				This will be amazing.
+				Click "Play" and prepared to be amazed. <strong>(But don't press "Play" twice!)</strong> This is an animation that lasts almost 7 minutes. There's no pause or rewind, so pay attention. If don't care about moving by chuncks, though, you <em>are</em> able to pick the scene by pressing the corresponding button. Although things should mostly reset after viewing a scene, my advice if you'd like to go to a certain scene is to refresh the page, then press the button. If something doesn't seem to be working right, switch to the latest version of Google Chrome (which is the only place I've had time to test this). Also, you may notice a "Fullscreen" button: after working with it for countless hours, I gave up on trying to include that functionality. I may try to make it work in the future, though, if I get bored. If you like what you see and would like to see it again in the future, I suggest saving the page to your computer to ensure that it remains functional: Many parts of this are hacked together, and if I ever rework things for smoother operation, it might render this website useless. (The things I would rework are external to this, so I might not notice a complete failure.) You can look up how to save a webpage to you computer, but they all generally involve looking at your browser's options and either selecting "Save as" or "Tools" &rarr; "Save as".
 			</p>
 			<div class="instant slides">
-				<div>
-					Slide 1
-				</div>
-				<div>
-					Slide 2
-				</div>
-				<div>
-					Slide 3
-				</div>
-				<div>
-					Slide 4
-				</div>
-				<div>
-					Slide 5
-				</div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
 			</div>
 			<button id="fullscreen" disabled>
 				Fullscreen
