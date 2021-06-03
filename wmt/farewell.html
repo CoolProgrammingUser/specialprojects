@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+	<head>
+		<title>
+			Farewell
+		</title>
+		<base target="_blank">
+		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
+		<script>
+			var S = Standards.general;
+
+
+			S.listen("nameList", "change", function () {
+				this.value = "";
+			});
+		</script>
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
+		<style>
+			.personal {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 class="main-title">
+			Farewell
+		</h1>
+		<main>
+			<section>
+				This is where I say "bye" to the people I knew at Walmart.
+			</section>
+			<select id="nameList">
+				<option value="" selected>Select...</option>
+			</select>
+			<div class="personal">
+				<h2>
+
+				</h2>
+				<section>
+
+				</section>
+			</div>
+			<div class="personal">
+				<h2>
+
+				</h2>
+				<section>
+
+				</section>
+			</div>
+		</main>
+	</body>
+</html>
