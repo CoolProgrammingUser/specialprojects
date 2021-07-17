@@ -6,18 +6,198 @@
 		</title>
 		<base target="_blank">
 		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.6.1/firebase.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.6.1/firebase-firestore.js"></script>
+		<script src="https://epicenterprograms.github.io/standards/behavior/firebaseinit.js"></script>
+		<script src="https://epicenterprograms.github.io/standards/behavior/storage.js"></script>
 		<script>
-			var S = Standards.general;
-
-
+            var S = Standards.general;
+            var server = Standards.storage.server;
+            server.defaultLocation = "~websites/specialprojects/wmt/farewell";
+            server.requireSignIn = false;
+			
+			var people = {
+				["Dallas Clark"]: [
+					"Which two colors were the origami box and flower I gave you for your birthday?",
+					/^blue (?:and |& )?pink$|^pink (?:and |& )?blue$/
+				],
+				["Kacie Finney"]: [
+					"What plant/animal hybrid game did you give me a better clearance price on when you found out I was going to buy it?",
+					/^pikmin(?: .+)?$/
+				],
+				["Lawayne Sullivan"]: [
+					"What did the guy at Walmart say his nickname was when he caught you for shoplifting?",
+					/^hawk[ -]?eye$/
+				]
+			};
+			
 			S.listen("nameList", "change", function () {
-				this.value = "";
+				if (this.value !== "") {
+					let person = this.value;
+					let question = people[person][0];
+					let answer = people[person][1];
+					S.makeDialog(question + "<br><input type='text' id='answer'>",
+						["Submit", function () {
+							if (S.getId("answer").value.trim().toLowerCase().search(answer) > -1) {
+								S.forEach(S.getClass("personal"), function (section) {
+									if (section.getElementsByTagName("h2")[0].textContent.trim() == person) {
+										section.style.display = "block";
+									}
+								});
+							} else {
+								S.makeDialog("Your answer was incorrect.");
+							}
+						}]
+					);
+					this.value = "";
+				}
+			});
+
+			
+			function refreshComments() {
+				server.list().then(function (comments) {
+					if (comments.length > 0) {
+						S.getId("commentsList").innerHTML = "";
+						S.forEach(comments, function (commentKey) {
+							server.recall(commentKey).then(function (data) {
+								let row = S.getId("commentsList").insertRow(0);
+								let author = document.createElement("th");
+								if (data.author) {
+									author.textContent = data.author;
+								} else {
+									author.textContent = "Anonymous";
+								}
+								let comment = document.createElement("td");
+								comment.textContent = data.message;
+								comment.innerHTML = comment.textContent.replace(/(^|[^:])\/\/(.+?)\/\//g, "$1<em>$2</em>").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/__(.+?)__/g, '<span style="text-decoration:underline">$1</span>').replace(/(https?:\/\/[^. \n]+(?:\.[^. \n]+)+)/g, "<a href='$1'>$1</a>");
+								row.dataset.timestamp = commentKey;
+								row.appendChild(author);
+								row.appendChild(comment);
+							}).catch(function (error) {
+								console.error("A comment couldn't be recalled.");
+								console.error(error);
+							});
+						});
+					}
+				}).catch(function (error) {
+					console.error("The information couldn't be listed.");
+					console.error(error);
+				});
+			}
+
+			function leaveComment() {
+				if (S.getId("commentArea").value.trim() != "") {
+					let data = {};
+					data.message = S.getId("commentArea").value.trim();
+					data.author = S.getId("author").value.trim();
+					server.store(String(new Date().getTime()), data).then(function () {
+						S.makeDialog("Comment stored.");
+						S.getId("commentArea").value = "";
+						S.getId("author").value = "";
+						refreshComments();
+					}).catch(function (error) {
+						console.error("The information couldn't be stored.");
+						console.error(error);
+						S.makeDialog("The comment couldn't be stored.");
+					});
+				}
+			}
+
+			S.listen("commentEditor", "click", function () {
+				if (this.textContent.trim() == "Edit comments") {  // if attempting to edit
+					S.makeDialog('Enter the password<br><br><input type="password" id="commentsEditorPassword">',
+						"Cancel",
+						["Submit",
+							function () {
+								if (S.getId("commentsEditorPassword").value == "b3a8A3i6b") {
+									S.getId("commentsList").contentEditable = true;
+									S.getId("commentEditor").textContent = "Finish";
+									S.makeDialog("Login successful.");
+								} else {
+									S.makeDialog("The password was incorrect.");
+								}
+							}]
+					);
+				} else {  // if currently editing
+					let remaining = new S.Listenable();
+					remaining.value = 0;
+					remaining.addEventListener("set", function (value) {
+						if (value == 0) {  // if all items have been iterated through
+							S.getId("commentEditor").textContent = "Edit comments";
+							S.getId("commentsList").contentEditable = false;
+							S.makeDialog("Editing successful.");
+							refreshComments();
+						}
+					});
+					S.forEach(S.getId("commentsList").rows, function (row) {
+						remaining.value++;
+						let data = {};
+						data.author = row.getElementsByTagName("th")[0].textContent;
+						data.message = row.getElementsByTagName("td")[0].innerHTML.trim();
+						if (data.message == "<br>") {
+							data.message = "";
+						}
+						data.message = data.message.replace(/<em>(.+?)<\/em>/g, "//$1//");
+						data.message = data.message.replace(/<strong>(.+?)<\/strong>/g, "**$1**");
+						data.message = data.message.replace(/<span style="text-decoration:underline">(.+?)<\/span>/g, "__$1__");
+						data.message = data.message.replace(/<a.*?>(.+?)<\/a>/g, "$1");
+						if (data.message) {
+							server.store(row.dataset.timestamp, data).then(function () {
+								remaining.value--;
+							}).catch(function (error) {
+								console.error("The edits couldn't be saved.");
+								console.error(error);
+							});
+						} else {
+							server.forget(row.dataset.timestamp).then(function () {
+								remaining.value--;
+							}).catch(function (error) {
+								console.error("The empty comment couldn't be deleted.");
+								console.error(error);
+							});
+						}
+					});
+					remaining.value = remaining.value;
+				}
+			});
+
+			
+			S.onLoad(function () {
+				S.forEach(people, function (person, name) {
+					let option = document.createElement("option");
+					option.value = name;
+					option.textContent = name;
+					S.getId("nameList").appendChild(option);
+				});
+
+                refreshComments();
 			});
 		</script>
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
 		<style>
 			.personal {
 				display: none;
+			}
+			#commentsContainer {
+				margin: 1em auto;
+				max-width: 100%;
+				max-height: 35em;
+				overflow: auto;
+			}
+			#commentsList {
+				margin: auto;
+			}
+			#commentsList tr {
+				margin: .5em;
+				border: .05em solid #ddd;
+				border-radius: 1em;
+				background: white;
+			}
+			#commentsList th {
+				border-right: .05em solid black;
+			}
+			#commentsList td {
+				white-space: pre-wrap;
 			}
 		</style>
 	</head>
@@ -34,20 +214,70 @@
 			</select>
 			<div class="personal">
 				<h2>
-
+					Dallas Clark
 				</h2>
 				<section>
-
+					
 				</section>
 			</div>
 			<div class="personal">
 				<h2>
-
+					Kacie Finney
 				</h2>
 				<section>
-
+					
 				</section>
 			</div>
+			<div class="personal">
+				<h2>
+					Lawayne Sullivan
+				</h2>
+				<section>
+					
+				</section>
+			</div>
+			<section>
+				You can leave comments below.
+			</section>
+			<section>
+				<span class="elaborate" style="color:blue">[Learn how to make special formatting]</span>
+			</section>
+			<aside data-heading="Formatting help">
+				<h3>Italics</h3>
+				<section>Surround the word or words to be italicized with two slashes.</section>
+				<section>//Stuff// = <em>Stuff</em></section>
+				<h3>Bolding</h3>
+				<section>Surround the word or words to be bolded with two asterisks.</section>
+				<section>**Stuff** = <strong>Stuff</strong></section>
+				<h3>Underlining</h3>
+				<section>Surround the word or words to be underlined with two underscores.</section>
+				<section>__Stuff__ = <span style="text-decoration:underline">Stuff</span></section>
+				<h3>Combining</h3>
+				<section>Text can have more than one type of formatting as long as the markup doesn't have to cross any other markup. (Treat them like parentheses.)</section>
+				<section>//**__Stuff__**// = <em><strong><span style="text-decoration:underline">Stuff</span></strong></em></section>
+				<section><del style="color:red">//**__Stuff//**__</del></section>
+				<section>//**Stuff**// **and stuffity stuff** = <em><strong>Stuff</strong></em> <strong>and stuffity stuff</strong></section>
+				<section>**//Stuff// and stuffity stuff** = <strong><em>Stuff</em> and stuffity stuff</strong></section>
+				<section><del style="color:red">//**Stuff// and stuffity stuff**</del></section>
+				<h3>Other</h3>
+				<section>Full links will become clickable.</section>
+				<section>https://coolprogramminguser.github.io/cramped/ = <a href="https://coolprogramminguser.github.io/cramped/">https://coolprogramminguser.github.io/cramped/</a></section>
+			</aside>
+			<input type="text" id="author" placeholder="Name (optional)">
+			<br>
+			<textarea id="commentArea" placeholder="Enter your comment..."></textarea>
+			<br>
+			<button onclick="leaveComment()">
+				Leave a comment
+			</button>
+			<br>
+			<div id="commentsContainer">
+				<table class="labeled-list" id="commentsList"><tr><td>No comments could be loaded.</td></tr></table>
+			</div>
+			<br>
+			<button id="commentEditor">
+				Edit comments
+			</button>
 		</main>
 	</body>
 </html>
