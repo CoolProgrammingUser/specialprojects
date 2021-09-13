@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+	<head>
+		<title>
+			Hippo game
+		</title>
+		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
+		<script src="https://epicenterprograms.github.io/standards/behavior/game.js"></script>
+		<script>
+			var S = Standards.general;
+			var G = Standards.game;
+
+			S.onLoad(function () {
+				G.container = S.getId("gameContainer");
+
+				var mainHippo = new G.Character("https://images.8tracks.com/avatar/i/008/778/820/bakmaya-kiyamayacaginiz-yeni-dog-1536.jpg?rect=420,0,1080,1080&q=98&fm=jpg&fit=max&w=640&h=640", { id: "mainHippo" });
+				mainHippo.insertBodyInto(S.getId("gameContainer"), function () {
+					mainHippo.goTo(50, 50);
+					mainHippo.moveRandomly();
+					mainHippo.startAction("move around", this.moveRandomly, 1500);
+				});
+
+				var face = new G.Character();
+				face.insertBodyInto(S.getId("gameContainer"), function () {
+                    face.goTo(50, 50);
+                    face.startAction("move around", this.moveRandomly, 1500);
+				});
+			});
+		</script>
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/game.css">
+		<style>
+			#gameContainer {
+				position: relative;
+				width: 20em;
+				height: 20em;
+			}
+			#mainHippo {
+				position: absolute;
+				width: 5em;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 class="main-title">
+			Hippo game
+		</h1>
+		<main>
+			<section>
+				This is a very basic game that I made as a peace offering to you (although it can hardly be considered a game at this point). It'll surely expand if I upset you in the future (or if you really really want me to work on it).
+			</section>
+			<div id="gameContainer"></div>
+		</main>
+	</body>
+</html>
