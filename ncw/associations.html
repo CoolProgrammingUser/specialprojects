@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+	<head>
+		<title>
+			People associations
+		</title>
+		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
+		<script>
+			var S = Standards.general;
+			var people = {
+				"Andrew": "Paternal cousin's boyfriend; dating TJ",
+				"Beau": "Nephew; son of Heath and Leslie",
+				"Beth": "Paternal aunt; Chris's wife",
+				"Bryan": "Father; Gloria's husband",
+				"Charlotte": "Niece; daughter of Heath and Leslie",
+				"Chris": "Paternal uncle; Beth's husband",
+				"Delbert": "Paternal grandfather; Sharon Kay's husband",
+				"Dylan": "Stepbrother; Gloria's son",
+				"Gloria": "Stepmother; Bryan's wife",
+				"Heath": "Deceased brother; Leslie's husband",
+				"Khylee": "Best friend; married to Peyton",
+				"Leslie": "Sister-in-law; Heath's wife",
+				"Melinda": "Mother; Bryan's ex-wife",
+				"Meme": "Great grandmother",
+				"Mikayla": "Stepbrother's girlfriend; dating Dylan",
+				"Nana": "Paternal grandmother; Sharon Kay",
+				"Nick": "Niece's father; Sierra's ex-boyfriend",
+				"P": "Best friend's husband; Peyton",
+				"Peyton": "Best friend's husband; married to Khylee",
+				"Rosalyn Kay": "Name for future female child",
+				"Ryleigh": "Niece; Sierra's daughter",
+				"Savannah": "Deceased cousin",
+				"Sharon Kay": "Paternal grandmother; Delbert's wife",
+				"Sierra": "Sister; mother of Ryleigh",
+				"TJ": "Paternal cousin; daughter of Beth and Chris",
+				"Xavier Heath": "Name for future male child"
+			}
+
+			S.listen("people", "change", function () {
+				if (this.value == "") {
+					S.getId("association").textContent = "";
+				} else {
+					S.getId("association").textContent = people[this.value];
+				}
+			});
+
+			S.onLoad(function () {
+				S.forEach(people, function (description, name) {
+					let option = document.createElement("option");
+					option.value = name;
+					option.textContent = name;
+					S.getId("people").appendChild(option);
+				});
+			});
+		</script>
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
+		<style>
+			body {
+				background: repeating-linear-gradient(yellow, turquoise 100vh, yellow 200vh);
+			}
+			h1.main-title {
+				color: black;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 class="main-title">
+			People associations
+		</h1>
+		<main>
+			<section>
+				This helps me keep straight your associations with people.
+			</section>
+			<br>
+			<select id="people"><option value="" selected>Person</option></select>
+			<span id="association"></span>
+		</main>
+		<footer>
+			Last updated: 9/18/2021
+		</footer>
+	</body>
+</html>

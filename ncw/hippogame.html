@@ -22,14 +22,20 @@
 
 				var face = new G.Character();
 				face.insertBodyInto(S.getId("gameContainer"), function () {
-                    face.goTo(50, 50);
-                    face.startAction("move around", this.moveRandomly, 1500);
+					face.goTo(50, 50);
+					face.startAction("move around", this.moveRandomly, 1500);
 				});
 			});
 		</script>
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/game.css">
 		<style>
+			body {
+				background: repeating-linear-gradient(yellow, turquoise 100vh, yellow 200vh);
+			}
+			h1.main-title {
+				color: black;
+			}
 			#gameContainer {
 				position: relative;
 				width: 20em;
