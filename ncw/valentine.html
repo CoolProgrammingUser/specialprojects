@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+	<head>
+		<title>
+			Valentine
+		</title>
+		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
+		<!--
+		<script src="https://epicenterprograms.github.io/standards/behavior/game.js"></script>
+		-->
+		<script src="file:///C:/Users/rtben/Documents/GitHub/standards/behavior/game.js"></script>
+		<script>
+			var S = Standards.general;
+			var G = Standards.game;
+			var A = G.animations;
+
+			G.container = "gameContainer";
+			var fries;
+			var woofWoof;
+			var full = false;
+
+			function makeFloatingHeart() {
+				let heart = document.createElement("div");
+				heart.className = "floating-heart";
+				heart.innerHTML = "&#10084;&#65039;";
+				let size = Math.round(Math.random() * 30) / 10;
+				if (size < 1) {
+					size = 1;
+				}
+				heart.style.fontSize = size + "em";
+				heart.style.left = Math.round(Math.random() * 100 - 2) + "vw";
+				document.body.appendChild(heart);
+				let top = 100 * size;
+				let movement = setInterval(function () {
+					if (top > -5) {
+						heart.style.top = top-- / size + "vh";
+					} else {
+						S.removeSelf(heart);
+						clearInterval(movement);
+					}
+				}, 30);
+			}
+
+            function actInnocent() {
+                woofWoof.stopAction("retreat");
+                woofWoof.stopAction("pounce");
+				woofWoof.body.src = "Innocent Lady.jpg";
+				woofWoof.startAction("act innocent", woofWoof.moveRandomly, 1500);
+                if (full) {
+                    woofWoof.body.style.width = "4em";
+                } else {
+                    setTimeout(getHungry, Math.round(Math.random() * 8000 + 5000));
+                }
+            }
+
+			function getHungry() {
+				woofWoof.stopAction("act innocent");
+				woofWoof.startAction("pounce", function () {
+					woofWoof.approach(fries, 20);
+					woofWoof.moveOneFrame();
+                    if (G.getDistance(woofWoof, fries) < 5) {
+						fries.goTo(-100, -100);
+						full = true;
+						woofWoof.speak("*Licks lips*");
+						A.run();
+						actInnocent();
+					} else if (G.getDistance(woofWoof, fries) < 25) {
+                        woofWoof.body.src = "Biting Lady.jpg";
+                        woofWoof.body.style.width = "3em";
+                    }
+				});
+			}
+
+            function retreat() {
+                woofWoof.stopAction("act innocent");
+                woofWoof.stopAction("pounce");
+				woofWoof.body.src = "Side-eye Lady.jpg";
+				woofWoof.body.style.width = "4em";
+                woofWoof.startAction("retreat", function () {
+                    woofWoof.approach(fries, -20);
+                    woofWoof.moveOneFrame();
+				});
+				setTimeout(actInnocent, 3000);
+            }
+
+			S.onLoad(function () {
+
+				let friesBody = document.createElement("div");
+				friesBody.id = "fries";
+                friesBody.innerHTML = "&#127839;";
+				fries = new G.Character(friesBody);
+				fries.insertBodyAt(50, 80);
+
+				woofWoof = new G.Character("Innocent Lady.jpg", { id: "woofWoof" });
+				woofWoof.insertBodyAt(50, 25);
+				actInnocent();
+				S.listen("woofWoof", "click", retreat);
+
+				setInterval(function () {
+					makeFloatingHeart();
+				}, 150);
+			});
+		</script>
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/game.css">
+		<style>
+			body {
+				background: repeating-linear-gradient(red, yellow 100vh, red 200vh);
+			}
+			.floating-heart {
+				position: fixed;
+				top: 100vh;
+				z-index: -1;
+			}
+			#fries {
+				position: absolute;
+				font-size: 2em;
+			}
+			#gameContainer {
+				position: relative;
+				width: 20em;
+				height: 20em;
+			}
+			#woofWoof {
+				position: absolute;
+				width: 4em;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 class="main-title">
+			Happy Valentine's Day!
+		</h1>
+		<main>
+			<section>
+				Keep Lady away from the fries by clicking on her. Reload to start again.
+			</section>
+			<div id="gameContainer"></div>
+		</main>
+	</body>
+</html>
