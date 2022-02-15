@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 	<head>
+		<link rel="icon" href="https://epicenterprograms.github.io/standards/favicons/red circle.ico">
 		<title>
 			Valentine
 		</title>
@@ -24,7 +25,7 @@
 				if (size < 1) {
 					size = 1;
 				}
-				heart.style.fontSize = size + "em";
+				heart.style.fontSize = size + "rem";
 				heart.style.left = Math.round(Math.random() * 100 - 2) + "vw";
 				document.body.appendChild(heart);
 				let top = 100 * size;
@@ -95,7 +96,7 @@
 
 				setInterval(function () {
 					makeFloatingHeart();
-				}, 150);
+				}, Math.round(450 / (screen.width / 1000) ** 2));
 			});
 		</script>
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
