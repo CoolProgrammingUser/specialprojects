@@ -39,60 +39,59 @@
 				}, 30);
 			}
 
-            function actInnocent() {
-                woofWoof.stopAction("retreat");
-                woofWoof.stopAction("pounce");
+			function actInnocent() {
+				woofWoof.stopAction("retreat");
+				woofWoof.stopAction("pounce");
 				woofWoof.body.src = "Innocent Lady.jpg";
-				woofWoof.startAction("act innocent", woofWoof.moveRandomly, 1500);
-                if (full) {
-                    woofWoof.body.style.width = "4em";
-                } else {
-                    setTimeout(getHungry, Math.round(Math.random() * 8000 + 5000));
-                }
-            }
+				woofWoof.startAction("act innocent", woofWoof.moveRandomly, 1500);  //// creates an error in the Editor preview
+				if (full) {
+					woofWoof.body.style.width = "4em";
+				} else {
+					setTimeout(getHungry, Math.round(Math.random() * 8000 + 5000));
+				}
+			}
 
 			function getHungry() {
 				woofWoof.stopAction("act innocent");
 				woofWoof.startAction("pounce", function () {
 					woofWoof.approach(fries, 20);
 					woofWoof.moveOneFrame();
-                    if (G.getDistance(woofWoof, fries) < 5) {
+					if (G.getDistance(woofWoof, fries) < 5) {
 						fries.goTo(-100, -100);
 						full = true;
 						woofWoof.speak("*Licks lips*");
 						A.run();
 						actInnocent();
 					} else if (G.getDistance(woofWoof, fries) < 25) {
-                        woofWoof.body.src = "Biting Lady.jpg";
-                        woofWoof.body.style.width = "3em";
-                    }
+						woofWoof.body.src = "Biting Lady.jpg";
+						woofWoof.body.style.width = "3em";
+					}
 				});
 			}
 
-            function retreat() {
-                woofWoof.stopAction("act innocent");
-                woofWoof.stopAction("pounce");
+			function retreat() {
+				woofWoof.stopAction("act innocent");
+				woofWoof.stopAction("pounce");
 				woofWoof.body.src = "Side-eye Lady.jpg";
 				woofWoof.body.style.width = "4em";
-                woofWoof.startAction("retreat", function () {
-                    woofWoof.approach(fries, -20);
-                    woofWoof.moveOneFrame();
+				woofWoof.startAction("retreat", function () {
+					woofWoof.approach(fries, -20);
+					woofWoof.moveOneFrame();
 				});
 				setTimeout(actInnocent, 3000);
-            }
+			}
 
 			S.onLoad(function () {
-
 				let friesBody = document.createElement("div");
 				friesBody.id = "fries";
-                friesBody.innerHTML = "&#127839;";
+				friesBody.innerHTML = "&#127839;";
 				fries = new G.Character(friesBody);
 				fries.insertBodyAt(50, 80);
 
 				woofWoof = new G.Character("Innocent Lady.jpg", { id: "woofWoof" });
 				woofWoof.insertBodyAt(50, 25);
 				actInnocent();
-				S.listen("woofWoof", "click", retreat);
+				S.listen("woofWoof", "click", retreat);  //// creates an error in the Editor preview
 
 				setInterval(function () {
 					makeFloatingHeart();
