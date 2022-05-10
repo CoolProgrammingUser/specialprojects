@@ -42,7 +42,7 @@
 			function actInnocent() {
 				woofWoof.stopAction("retreat");
 				woofWoof.stopAction("pounce");
-				woofWoof.body.src = "Innocent Lady.jpg";
+				woofWoof.body.src = "https://coolprogramminguser.github.io/specialprojects/ncw/Innocent Lady.jpg";
 				woofWoof.startAction("act innocent", woofWoof.moveRandomly, 1500);  //// creates an error in the Editor preview
 				if (full) {
 					woofWoof.body.style.width = "4em";
@@ -63,7 +63,7 @@
 						A.run();
 						actInnocent();
 					} else if (G.getDistance(woofWoof, fries) < 25) {
-						woofWoof.body.src = "Biting Lady.jpg";
+						woofWoof.body.src = "https://coolprogramminguser.github.io/specialprojects/ncw/Biting Lady.jpg";
 						woofWoof.body.style.width = "3em";
 					}
 				});
@@ -72,7 +72,7 @@
 			function retreat() {
 				woofWoof.stopAction("act innocent");
 				woofWoof.stopAction("pounce");
-				woofWoof.body.src = "Side-eye Lady.jpg";
+				woofWoof.body.src = "https://coolprogramminguser.github.io/specialprojects/ncw/Side-eye Lady.jpg";
 				woofWoof.body.style.width = "4em";
 				woofWoof.startAction("retreat", function () {
 					woofWoof.approach(fries, -20);
@@ -88,7 +88,7 @@
 				fries = new G.Character(friesBody);
 				fries.insertBodyAt(50, 80);
 
-				woofWoof = new G.Character("Innocent Lady.jpg", { id: "woofWoof" });
+				woofWoof = new G.Character("https://coolprogramminguser.github.io/specialprojects/ncw/Innocent Lady.jpg", { id: "woofWoof" });
 				woofWoof.insertBodyAt(50, 25);
 				actInnocent();
 				S.listen("woofWoof", "click", retreat);  //// creates an error in the Editor preview
