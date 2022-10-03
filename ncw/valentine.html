@@ -82,6 +82,16 @@
 			}
 
 			S.onLoad(function () {
+				// anniversary Easter egg
+				let today = new Date()
+				if (today.getMonth() == 9 && today.getDate() == 3) {  // if it's our anniversary
+					setTimeout(function () {
+						if (fries.position.x > -100 && fries.position.y > -100) {  // if the fries haven't been eaten yet
+							S.makeDialog("You kept the fries safe! Now you should see if Hammy has anything to say to you.")
+                        }
+					}, 60000);
+                }
+
 				let friesBody = document.createElement("div");
 				friesBody.id = "fries";
 				friesBody.innerHTML = "&#127839;";
