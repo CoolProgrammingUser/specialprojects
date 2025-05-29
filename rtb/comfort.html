@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+	<head>
+		<title>
+			Comfort
+		</title>
+		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
+		<script src="https://epicenterprograms.github.io/standards/behavior/storage.js"></script>
+		<script src="https://epicenterprograms.github.io/standards/behavior/game.js"></script>
+		<script>
+			var S = Standards.general;
+			var M = Standards.storage;
+			var G = Standards.game;
+			G.container = "interactiveDisplay";
+			var defeatedRemarks = [];
+			var reflection;
+
+
+
+			S.listen("moodScore", "input", function () {
+				let blue = 255 - this.value;
+				this.style.accentColor = `rgb(${this.value}, ${this.value}, ${blue})`;
+			});
+
+			S.listen("startComfort", "click", function () {
+				if (S.getId("troublesCompilation").value.trim() != "") {
+					if (reflection?.exists) {
+						reflection.ceaseToExist();
+					}
+					defeatedRemarks = S.getId("troublesCompilation").value.trim().split("\n");
+					let moodDisplay;
+					if (S.getId("moodScore").value < 85) {
+						moodDisplay = "sad-face";
+					} else if (S.getId("moodScore").value < 170) {
+						moodDisplay = "robot-face";
+					} else {
+						moodDisplay = "happy-face";
+					}
+					reflection = new G.Character(moodDisplay);
+					reflection.insertBodyAt(50, 50);
+					reflection.speak(defeatedRemarks[Math.floor(Math.random() * defeatedRemarks.length)], { type: "text" });
+				} else {
+					S.makeDialog("Try describing a little of what you're feeling first.");
+				}
+			});
+
+			S.onLoad(function () {
+
+			});
+		</script>
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/game.css">
+		<style>
+			#moodScore {
+				width: 75%;
+			}
+			#troublesCompilation {
+				width: 75%;
+				height: 12em;
+			}
+
+			#interactiveDisplay {
+				--display-width: 35rem;
+				--game-space-width: calc(var(--display-width) / 6);
+				--game-space-border: calc(var(--display-width) / 80);
+				--size-unit: calc(var(--display-width) / 45);
+				display: block;
+				position: relative;
+				width: var(--display-width);
+				height: var(--display-width);
+				overflow: hidden;
+				background-color: black;
+			}
+
+			@media (max-width: 1000px) {
+				main {
+					padding: 0em 1.25em 2em;
+					overflow: hidden;
+				}
+				#moodScore {
+					width: calc(75% / 3);  /* accounts for the scaling up by 3 */
+				}
+				#interactiveDisplay {
+					--display-width: 100vw;
+					margin-left: -1.25em;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<h1 class="main-title">
+			Comfort
+		</h1>
+		<main>
+			<section>
+				Everything's going to be okay.
+			</section>
+			<div class="details">
+				<div class="summary">
+					Describe how you're feeling
+				</div>
+				<section>
+					Rate your mood from worst to best:
+				</section>
+				<input type="range" id="moodScore" max="255" style="accent-color: rgb(128, 128, 128)">
+				<section>
+					Get everything off your chest here. Try putting distinct thoughts on separate lines.
+				</section>
+				<textarea id="troublesCompilation"></textarea>
+				<br>
+				<button id="startComfort">
+					Relieve the weight
+				</button>
+			</div>
+			<div id="interactiveDisplay"></div>
+		</main>
+	</body>
+</html>
