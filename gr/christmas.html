@@ -98,7 +98,7 @@
 				const present = document.createElement("div");
 				present.className = "present";
 				present.style.setProperty("--dimensions", `scale(${Math.random() * 2 + 1}, ${Math.random() * 1 + 1})`);  // gives the presents random dimensions
-				present.style.left = `calc(50% - ${Math.round(Math.cos(id * Math.PI / 4) * 8 + 3)}em)`;
+				present.style.left = `calc(50% - ${Math.round(Math.cos(id * Math.PI / 4) * 8 + 2.5)}em)`;
 				present.style.bottom = `${Math.round((Math.sin(id * Math.PI / 4 + Math.PI) + 1) * 12 + 8)}vh`;
 				present.style.zIndex = -Math.round(Math.sin(id * Math.PI / 4 + Math.PI) * 3 - 2);  // makes sure font presents are in front
 				S.getId("presentPile").appendChild(present);
@@ -136,10 +136,6 @@
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/christmas.css">
 		<style>
-			main {
-				overflow: visible;
-			}
-
 			.falling-snowflake {
 				position: absolute;
 				top: -10vh;
