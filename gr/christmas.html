@@ -133,6 +133,10 @@
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
 		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/christmas.css">
 		<style>
+			main {
+				overflow: visible;
+			}
+
 			.falling-snowflake {
 				position: absolute;
 				top: -10vh;
@@ -227,37 +231,37 @@
 					transform: var(--dimensions) scale(1.25);
 				}
 				25% {
-					top: -40vh;
+					top: -35vh;
 					transform: var(--dimensions) scale(2);
 				}
 				30%, 50% {
-					top: -40vh;
+					top: -35vh;
 					transform: var(--dimensions) scale(2) rotate(4deg);
 				}
 				40%, 60% {
-					top: -40vh;
+					top: -35vh;
 					transform: var(--dimensions) scale(2) rotate(-4deg);
 				}
 				65% {
-					top: -40vh;
+					top: -35vh;
 					transform: var(--dimensions) scale(2);
 					filter: none;
 				}
 				70% {
-					top: -40vh;
+					top: -35vh;
 					transform: var(--dimensions) scale(2);
 					filter: none;
 					opacity: 100%;
 				}
 				80% {
-					top: -40vh;
+					top: -35vh;
 					transform: var(--dimensions) scale(2);
 					filter: drop-shadow(0 0 1em yellow);
 					opacity: 100%;
 				}
 				100% {
 					visibility: hidden;
-					top: -40vh;
+					top: -35vh;
 					transform: var(--dimensions) scale(2);
 					filter: drop-shadow(0 0 5em yellow);
 					opacity: 0%;
@@ -267,9 +271,11 @@
 				0% {
 					transform: scale(.5) translate(-100%, -100%);
 					filter: drop-shadow(0 0 2em yellow);
+					opacity: 0%;
 				}
 				50% {
 					transform: scale(.5) translate(-100%, -100%);
+					opacity: 100%;
 				}
 				75% {
 					opacity: 100%;
@@ -283,7 +289,12 @@
 
 			@media (max-width: 1000px) {
 				.present::before {
-					font-size: 1.5em;
+					font-size: 2em;
+				}
+				.gift-contents img {
+					margin: 0em 1.5em;
+					max-width: 8em;
+					max-height: 6em;
 				}
 			}
 		</style>
