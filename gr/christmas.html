@@ -94,14 +94,17 @@
 
 			function makePresent(id) {
 				// creates a present in a semi-circle underneath the tree, positioned based on id
+				id--;  // the minimum id should be 0 instead of 1
 				const present = document.createElement("div");
 				present.className = "present";
-				present.style.setProperty("--dimensions", `scale(${Math.random() * 2 + 1}, ${Math.random() * 1 + 1})`);
-				present.style.top = `-${Math.round((Math.cos(id * Math.PI / 3) + 1) * 11)}vh`;
-				present.style.zIndex = -Math.round(Math.cos(id * Math.PI / 3) - 2);
+				present.style.setProperty("--dimensions", `scale(${Math.random() * 2 + 1}, ${Math.random() * 1 + 1})`);  // gives the presents random dimensions
+				present.style.left = `calc(50% - ${Math.round(Math.cos(id * Math.PI / 4) * 8 + 3)}em)`;
+				present.style.bottom = `${Math.round((Math.sin(id * Math.PI / 4 + Math.PI) + 1) * 12 + 8)}vh`;
+				present.style.zIndex = -Math.round(Math.sin(id * Math.PI / 4 + Math.PI) * 3 - 2);  // makes sure font presents are in front
 				S.getId("presentPile").appendChild(present);
 				// reveal the present contents on click
 				present.addEventListener("click", function () {
+					present.style.pointerEvents = "none";  // prevents multiple clicks from revealing multiple gifts
 					present.style.animation = "open 3s ease-out forwards";
 					revealGift(present);
 				});
@@ -149,8 +152,7 @@
 			}
 
 			.present {  /* the wrapped presents sitting under the tree */
-				position: relative;
-				margin: -1.5em .5em 0em;
+				position: absolute;
 				cursor: pointer;
 				transform: var(--dimensions);  /* adds variation to the dimensions with JavaScript */
 			}
@@ -184,7 +186,7 @@
 			#presentPile {  /* the area with the tree and wrapped presents */
 				display: block;
 				position: relative;
-				padding: 5vh;
+				padding: 5vh 1em 5em;
 			}
 			#presentPile .gift-contents {
 				position: absolute;
@@ -197,7 +199,7 @@
 			}
 			#christmasTree {
 				display: block;
-				max-width: 50vw;
+				max-width: 75vw;
 				max-height: 75vh;
 				margin: auto;
 			}
@@ -231,37 +233,37 @@
 					transform: var(--dimensions) scale(1.25);
 				}
 				25% {
-					top: -35vh;
+					bottom: 35vh;
 					transform: var(--dimensions) scale(2);
 				}
 				30%, 50% {
-					top: -35vh;
+					bottom: 35vh;
 					transform: var(--dimensions) scale(2) rotate(4deg);
 				}
 				40%, 60% {
-					top: -35vh;
+					bottom: 35vh;
 					transform: var(--dimensions) scale(2) rotate(-4deg);
 				}
 				65% {
-					top: -35vh;
+					bottom: 35vh;
 					transform: var(--dimensions) scale(2);
 					filter: none;
 				}
 				70% {
-					top: -35vh;
+					bottom: 35vh;
 					transform: var(--dimensions) scale(2);
 					filter: none;
 					opacity: 100%;
 				}
 				80% {
-					top: -35vh;
+					bottom: 35vh;
 					transform: var(--dimensions) scale(2);
 					filter: drop-shadow(0 0 1em yellow);
 					opacity: 100%;
 				}
 				100% {
 					visibility: hidden;
-					top: -35vh;
+					bottom: 35vh;
 					transform: var(--dimensions) scale(2);
 					filter: drop-shadow(0 0 5em yellow);
 					opacity: 0%;
