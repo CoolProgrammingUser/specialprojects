@@ -162,9 +162,13 @@
 				display: block;
 				margin-top: 1em;
 				margin-bottom: 1em;
-				height: 8em;
 				text-align: left;
 				text-align-last: left;
+			}
+			.gift-contents::after {  /* makes sure floated images don't cause the .gift-contents to overlap */
+				content: "";
+				display: table;
+				clear: both;
 			}
 			.gift-contents img {
 				float: left;
@@ -205,7 +209,7 @@
 
 			@keyframes fall {  /* the fall of the snowflakes */
 				to {
-					transform: translateY(120vh);
+					transform: translateY(110vh);
 				}
 			}
 			@keyframes sway {  /* the horizontal sway of the snowflakes */
@@ -274,6 +278,12 @@
 				100% {
 					transform: scale(.5) translate(-100%, -100%) translateY(100vh);
 					opacity: 0%;
+				}
+			}
+
+			@media (max-width: 1000px) {
+				.present::before {
+					font-size: 1.5em;
 				}
 			}
 		</style>
