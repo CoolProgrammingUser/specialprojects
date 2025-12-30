@@ -98,7 +98,7 @@
 				const present = document.createElement("div");
 				present.className = "present";
 				present.style.setProperty("--dimensions", `scale(${Math.random() * 2 + 1}, ${Math.random() * 1 + 1})`);  // gives the presents random dimensions
-				present.style.left = `calc(50% - ${Math.cos(id * Math.PI / 4) * 10 + 2}rem)`;
+				present.style.left = `calc(50% - ${Math.cos(id * Math.PI / 4) * 10}rem * var(--left-mult) - 3rem)`;
 				present.style.bottom = `${((Math.sin(id * Math.PI / 4 + Math.PI) + 1) * 12 + 8)}vh`;
 				present.style.zIndex = -Math.round(Math.sin(id * Math.PI / 4 + Math.PI) * 3 - 2);  // makes sure font presents are in front
 				S.getId("presentPile").appendChild(present);
@@ -183,6 +183,7 @@
 				display: block;
 				position: relative;
 				padding: 5vh 1em 5em;
+				--left-mult: 1;  /* how far from the center the presents should horizontally spread out (most useful for mobile) */
 			}
 			#presentPile .gift-contents {
 				position: absolute;
@@ -293,6 +294,9 @@
 					margin: 0em 1.5em;
 					max-width: 8em;
 					max-height: 6em;
+				}
+				#presentPile {
+					--left-mult: 1.75;
 				}
 			}
 		</style>
