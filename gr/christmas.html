@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+	<head>
+		<title>
+			Merry Christmas!
+		</title>
+		<link rel="icon" href="favicon.ico">
+		<base target="_blank">
+		<script src="https://epicenterprograms.github.io/standards/behavior/general.js"></script>
+		<script>
+			var S = Standards.general;
+			var giftChoices = ["a", "b", "c", "d", "e"];  // placeholders for different gifts
+
+			function makeFallingSnowflake() {
+				const flake = document.createElement("div");
+				flake.className = "falling-snowflake";
+				flake.style.left = Math.round(Math.random() * 86 + 6) + "vw";
+				flake.style.setProperty(  // varies the fall speed
+					"--fall-duration",
+					`${8 + Math.random() * 8}s`
+				);
+				flake.style.setProperty(  // varies the sway speed
+					"--sway-duration",
+					`${3 + Math.random() * 4}s`
+				);
+				flake.style.setProperty(  // varies the horizontal sway offset
+					"--drift",
+					`${(Math.random() - 0.5) * 6}vw`
+				);
+				document.body.appendChild(flake);
+
+				// changes the x-position on snowflake falling loop
+				flake.addEventListener("animationiteration", (e) => {
+					if (e.animationName === "fall") {
+						flake.style.left = Math.round(Math.random() * 86 + 6) + "vw";
+					}
+				});
+			}
+
+			function revealGift(present) {
+				const letter = giftChoices.splice(Math.floor(Math.random() * giftChoices.length), 1)[0];  // random gift choice
+				const grouping = document.createElement("div");
+				grouping.className = "gift-contents";
+				const img = document.createElement("img");
+				const title = document.createElement("h3");
+				const desc = document.createElement("section");
+				// use the letter to pick specific present contents
+				switch (letter) {
+					case "a":
+						img.src = "Interior Christmas scene.jpg";
+						title.textContent = "Christmas enjoyment";
+						desc.textContent = "Although Christmas is pretty great by default, you make it that much better. I hope this makes it that much better for you as well.";
+						break;
+					case "b":
+						img.src = "Me in a Nutshell.png";
+						title.textContent = "Website of me";
+						desc.innerHTML = 'Long ago, I started a website about myself <a href="https://coolprogramminguser.github.io/cramped/">here</a>, and I kept it around because I thought it was cool. If you\'d like greater insight into what kind of weird, nerdy life I live behind the scenes, you can learn about it there.';
+						break;
+					case "c":
+						img.src = "Wall with and without soot.jpg";
+						title.textContent = "You make a difference";
+						desc.textContent = "You make things like this possible. I appreciate what you do for me.";
+						break;
+					case "d":
+						img.src = "Filled Otrio square.jpg";
+						title.textContent = "Online game";
+						desc.innerHTML = 'This is a simple game I programmed which you can play <a href="https://epicenterprograms.github.io/games/otrio">here</a>. It works just by yourself or we could play it together!';
+						break;
+					case "e":
+						img.src = "Isolated inflatable Santa.png";
+						title.textContent = "You";
+						desc.textContent = "Is it just me, or is there a resemblence here?";
+						break;
+					default:
+				}
+				grouping.appendChild(img);
+				grouping.appendChild(title);
+				grouping.appendChild(desc);
+				setTimeout(function () {  // places an image behind the disappearing present
+					const presRect = present.getBoundingClientRect();
+					const pileRect = S.getId("presentPile").getBoundingClientRect();
+					const centerX = presRect.left - pileRect.left + presRect.width / 2;
+					const centerY = presRect.top - pileRect.top + presRect.height / 2;
+					grouping.style.left = `${centerX}px`;
+					grouping.style.top = `${centerY}px`;
+					grouping.style.animation = "display-and-sink 2s ease-in";
+					S.getId("presentPile").appendChild(grouping);
+				}, 2000);
+				setTimeout(function () {  // moves the revealed gift to a list
+					S.getId("presentList").appendChild(grouping);
+					grouping.style.animation = "none";
+				}, 4000);
+			}
+
+			function makePresent(id) {
+				// creates a present in a semi-circle underneath the tree, positioned based on id
+				const present = document.createElement("div");
+				present.className = "present";
+				present.style.setProperty("--dimensions", `scale(${Math.random() * 2 + 1}, ${Math.random() * 1 + 1})`);
+				present.style.top = `-${Math.round((Math.cos(id * Math.PI / 3) + 1) * 11)}vh`;
+				present.style.zIndex = -Math.round(Math.cos(id * Math.PI / 3) - 2);
+				S.getId("presentPile").appendChild(present);
+				// reveal the present contents on click
+				present.addEventListener("click", function () {
+					present.style.animation = "open 3s ease-out forwards";
+					revealGift(present);
+				});
+			}
+
+			S.listen("redo", "click", function () {
+				// resets the whole page to unopened presents under the Christmas tree
+				S.getId("presentList").innerHTML = "";
+				S.forEach(S.getClass("present"), function (gift) {
+					gift.parentNode.removeChild(gift);
+				});
+				S.forEach(5, function (num) {
+					makePresent(num);
+				});
+				giftChoices = ["a", "b", "c", "d", "e"];
+			});
+
+			S.onLoad(function () {
+				// start falling snowflakes
+				S.forEach(40, function () {
+					setTimeout(makeFallingSnowflake, Math.round(Math.random() * 12000));
+				});
+				// put presents under the Christmas tree
+				S.forEach(5, function (num) {
+					makePresent(num);
+				});
+			});
+		</script>
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/foundation.css">
+		<link rel="stylesheet" href="https://epicenterprograms.github.io/standards/formatting/christmas.css">
+		<style>
+			.falling-snowflake {
+				position: absolute;
+				top: -10vh;
+				z-index: 10;
+				pointer-events: none;
+				animation: fall var(--fall-duration) linear infinite, sway var(--sway-duration) ease-in-out infinite alternate;
+			}
+			.falling-snowflake::before {
+				content: "\2744\fe0f";  /* snowflake emoji */
+			}
+
+			.present {  /* the wrapped presents sitting under the tree */
+				position: relative;
+				margin: -1.5em .5em 0em;
+				cursor: pointer;
+				transform: var(--dimensions);  /* adds variation to the dimensions with JavaScript */
+			}
+			.present::before {
+				content: "\1f381";  /* gift emoji */
+				font-size: 3em;
+			}
+			.present:hover {
+				transform: var(--dimensions) scale(1.25);
+			}
+
+			.gift-contents {  /* what's inside the presents (used in #presentPile and #presentList) */
+				display: block;
+				margin-top: 1em;
+				margin-bottom: 1em;
+				height: 8em;
+				text-align: left;
+				text-align-last: left;
+			}
+			.gift-contents img {
+				float: left;
+				margin: 0em 2em;
+				max-width: 10em;
+				max-height: 8em;
+			}
+
+			#presentPile {  /* the area with the tree and wrapped presents */
+				display: block;
+				position: relative;
+				padding: 5vh;
+			}
+			#presentPile .gift-contents {
+				position: absolute;
+			}
+			#presentPile .gift-contents *:not(img) {
+				display: none;  /* only shows the image during the initial reveal */
+			}
+			#presentPile .gift-contents img {
+				margin: 0em;
+			}
+			#christmasTree {
+				display: block;
+				max-width: 50vw;
+				max-height: 75vh;
+				margin: auto;
+			}
+
+			#presentList {  /* the area listing the gift contents after they're opened */
+				display: block;
+				margin-top: 2em;
+			}
+			#presentList section {
+				text-align: left;
+				text-align-last: left;
+			}
+
+			@keyframes fall {  /* the fall of the snowflakes */
+				to {
+					transform: translateY(120vh);
+				}
+			}
+			@keyframes sway {  /* the horizontal sway of the snowflakes */
+				from {
+					margin-left: calc(var(--drift) * -1);
+				}
+
+				to {
+					margin-left: var(--drift);
+				}
+			}
+
+			@keyframes open {  /* the opening of the presents */
+				0% {
+					transform: var(--dimensions) scale(1.25);
+				}
+				25% {
+					top: -40vh;
+					transform: var(--dimensions) scale(2);
+				}
+				30%, 50% {
+					top: -40vh;
+					transform: var(--dimensions) scale(2) rotate(4deg);
+				}
+				40%, 60% {
+					top: -40vh;
+					transform: var(--dimensions) scale(2) rotate(-4deg);
+				}
+				65% {
+					top: -40vh;
+					transform: var(--dimensions) scale(2);
+					filter: none;
+				}
+				70% {
+					top: -40vh;
+					transform: var(--dimensions) scale(2);
+					filter: none;
+					opacity: 100%;
+				}
+				80% {
+					top: -40vh;
+					transform: var(--dimensions) scale(2);
+					filter: drop-shadow(0 0 1em yellow);
+					opacity: 100%;
+				}
+				100% {
+					visibility: hidden;
+					top: -40vh;
+					transform: var(--dimensions) scale(2);
+					filter: drop-shadow(0 0 5em yellow);
+					opacity: 0%;
+				}
+			}
+			@keyframes display-and-sink {  /* displays what's inside (behind) the presents */
+				0% {
+					transform: scale(.5) translate(-100%, -100%);
+					filter: drop-shadow(0 0 2em yellow);
+				}
+				50% {
+					transform: scale(.5) translate(-100%, -100%);
+				}
+				75% {
+					opacity: 100%;
+					filter: drop-shadow(0 0 0em yellow);
+				}
+				100% {
+					transform: scale(.5) translate(-100%, -100%) translateY(100vh);
+					opacity: 0%;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<h1 class="main-title">
+			Merry Christmas!
+		</h1>
+		<main>
+			<div id="presentPile">
+				<img id="christmasTree" src="Recolored mini Christmas tree.png">
+			</div>
+			<h2>
+				Your Christmas haul:
+			</h2>
+			<div id="presentList"></div>
+			<button id="redo">
+				Rewrap<br>presents
+			</button>
+		</main>
+	</body>
+</html>
