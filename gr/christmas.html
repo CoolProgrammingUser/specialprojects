@@ -14,7 +14,7 @@
 			function makeFallingSnowflake() {
 				const flake = document.createElement("div");
 				flake.className = "falling-snowflake";
-				flake.style.left = Math.round(Math.random() * 86 + 6) + "vw";
+				flake.style.left = (Math.random() * 86 + 5) + "vw";
 				flake.style.setProperty(  // varies the fall speed
 					"--fall-duration",
 					`${8 + Math.random() * 8}s`
@@ -69,7 +69,7 @@
 					case "e":
 						img.src = "Isolated inflatable Santa.png";
 						title.textContent = "You";
-						desc.textContent = "Is it just me, or is there a resemblence here?";
+						desc.textContent = "Is it just me, or is there a resemblance here?";
 						break;
 					default:
 				}
@@ -296,7 +296,7 @@
 					max-height: 6em;
 				}
 				#presentPile {
-					--left-mult: 1.75;
+					--left-mult: 2;
 				}
 			}
 		</style>
